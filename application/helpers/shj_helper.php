@@ -79,6 +79,7 @@ if ( ! function_exists('filetype_to_extension'))
 			case 'py2': return 'py';
 			case 'py3': return 'py';
 			case 'java': return 'java';
+			case 'cs': return 'cs';
 			case 'zip': return 'zip';
 			case 'pdf': return 'pdf';
 			default: return FALSE;
@@ -99,6 +100,7 @@ if ( ! function_exists('filetype_to_language'))
 		switch ($file_type) {
 			case 'c': return 'C';
 			case 'cpp': return 'C++';
+			case 'cs': return 'CS';
 			case 'py2': return 'Py 2';
 			case 'py3': return 'Py 3';
 			case 'java': return 'Java';

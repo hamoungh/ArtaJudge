@@ -57,6 +57,7 @@ class Queueprocess extends CI_Controller
 			$assignment = $queue_item['assignment'];
 			$assignment_info = $this->assignment_model->assignment_info($assignment);
 			$problem = $this->assignment_model->problem_info($assignment, $queue_item['problem']);
+			
 			$type = $queue_item['type'];  // $type can be 'judge' or 'rejudge'
 
 			$submission = $this->submit_model->get_submission($username, $assignment, $problem['id'], $submit_id);
@@ -93,6 +94,9 @@ class Queueprocess extends CI_Controller
 				$time_limit = $problem['java_time_limit']/1000;
 			elseif ($file_extension === 'py')
 				$time_limit = $problem['python_time_limit']/1000;
+			elseif ($file_extension === 'cs')
+				$time_limit = $problem['cs_time_limit']/1000;
+			
 			$time_limit = round($time_limit, 3);
 			$time_limit_int = floor($time_limit) + 1;
 

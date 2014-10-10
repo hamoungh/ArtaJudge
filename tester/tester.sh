@@ -84,24 +84,28 @@ DIFFTOOL=${10}
 DIFFOPTION=${11}
 # enable/disable judge log
 if [ ${12} = "1" ]; then
+
 	LOG_ON=true
 else
 	LOG_ON=false
 fi
 # enable/disable easysandbox
 if [ ${13} = "1" ]; then
+
 	SANDBOX_ON=true
 else
 	SANDBOX_ON=false
 fi
 # enable/disable C/C++ shield
 if [ ${14} = "1" ]; then
+
 	C_SHIELD_ON=true
 else
 	C_SHIELD_ON=false
 fi
 # enable/disable Python shield
 if [ ${15} = "1" ]; then
+
 	PY_SHIELD_ON=true
 else
 	PY_SHIELD_ON=false
@@ -150,11 +154,14 @@ function shj_finish
 
 #################### Initialization #####################
 
+
 shj_log "Starting tester..."
+
 
 # detecting existence of perl
 PERL_EXISTS=true
 hash perl 2>/dev/null || PERL_EXISTS=false
+
 if ! $PERL_EXISTS; then
 	shj_log "Warning: perl not found. We continue without perl..."
 fi
@@ -192,6 +199,7 @@ fi
 
 COMPILE_BEGIN_TIME=$(($(date +%s%N)/1000000));
 
+
 ########################################################################################################
 ############################################ COMPILING JAVA ############################################
 ########################################################################################################
@@ -218,6 +226,8 @@ if [ "$EXT" = "java" ]; then
 		shj_finish "Compilation Error"
 	fi
 fi
+
+
 
 
 
@@ -252,6 +262,8 @@ fi
 
 
 
+
+
 ########################################################################################################
 ########################################## COMPILING PYTHON 3 ##########################################
 ########################################################################################################
@@ -283,9 +295,12 @@ fi
 
 
 
+
+
 ########################################################################################################
 ############################################ COMPILING C/C++ ###########################################
 ########################################################################################################
+
 
 if [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
 	COMPILER="gcc"
@@ -367,6 +382,33 @@ if [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
 fi
 
 
+########################################################################################################
+############################################ COMPILING C# ###########################################
+########################################################################################################
+
+if [ "$EXT" = "cs" ]; then
+	cp $PROBLEMPATH/$UN/$FILENAME.cs $FILENAME.cs
+	shj_log "Compiling as C#"
+	gmcs $FILENAME.cs >/dev/null 2>cerr
+	EXITCODE=$?
+	COMPILE_END_TIME=$(($(date +%s%N)/1000000));
+	shj_log "Compiled. Exit Code=$EXITCODE  Execution Time: $((COMPILE_END_TIME-COMPILE_BEGIN_TIME)) ms"
+	if [ $EXITCODE -ne 0 ]; then
+		shj_log "Compile Error"
+		shj_log "$(cat cerr|head -10)"
+		echo '<span class="shj_b">Compile Error</span>' >$PROBLEMPATH/$UN/result.html
+		echo '<span class="shj_r">' >> $PROBLEMPATH/$UN/result.html
+		#filepath="$(echo "${JAIL}/${FILENAME}.${EXT}" | sed 's/\//\\\//g')" #replacing / with \/
+		(cat cerr | head -10 | sed 's/&/\&amp;/g' | sed 's/</\&lt;/g' | sed 's/>/\&gt;/g' | sed 's/"/\&quot;/g') >> $PROBLEMPATH/$UN/result.html
+		#(cat $JAIL/cerr) >> $PROBLEMPATH/$UN/result.html
+		echo "</span>" >> $PROBLEMPATH/$UN/result.html
+		cd ..
+		rm -r $JAIL >/dev/null 2>/dev/null
+		shj_finish "Compilation Error"
+	fi
+fi
+
+
 
 ########################################################################################################
 ################################################ TESTING ###############################################
@@ -376,6 +418,8 @@ shj_log "\nTesting..."
 shj_log "$TST test cases found"
 
 echo "" >$PROBLEMPATH/$UN/result.html
+
+
 
 
 if [ -f "$PROBLEMPATH/tester.cpp" ] && [ ! -f "$PROBLEMPATH/tester.executable" ]; then
@@ -429,10 +473,16 @@ for((i=1;i<=TST;i++)); do
 			if $DISPLAY_JAVA_EXCEPTION_ON && grep -q -m 1 "^$javaexceptionname\$" ../java_exceptions_list; then
 				echo "<span class=\"shj_o\">Runtime Error ($javaexceptionname)</span>" >>$PROBLEMPATH/$UN/result.html
 			else
+
+
 				echo "<span class=\"shj_o\">Runtime Error</span>" >>$PROBLEMPATH/$UN/result.html
 			fi
 			continue
 		fi
+
+
+
+
 	elif [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
 		#$TIMEOUT ./$FILENAME <$PROBLEMPATH/in/input$i.txt >out 2>/dev/null
 		if $SANDBOX_ON; then
@@ -471,6 +521,14 @@ for((i=1;i<=TST;i++)); do
 		fi
 		EXITCODE=$?
 
+	elif [ "$EXT" = "cs" ]; then
+		#./$FILENAME <$PROBLEMPATH/in/input$i.txt >out 2>/dev/null
+		if $PERL_EXISTS; then
+			./runcode.sh $EXT $MEMLIMIT $TIMELIMIT $TIMELIMITINT $PROBLEMPATH/in/input$i.txt "./timeout --just-kill -nosandbox -l $OUTLIMIT -t $TIMELIMIT -m $MEMLIMIT mono ./$FILENAME.exe"
+		else
+			./runcode.sh $EXT $MEMLIMIT $TIMELIMIT $TIMELIMITINT $PROBLEMPATH/in/input$i.txt "mono ./$FILENAME.exe"
+		fi
+		EXITCODE=$?
 	else
 		shj_log "File Format Not Supported"
 		cd ..
@@ -519,7 +577,7 @@ for((i=1;i<=TST;i++)); do
 
 	if [ $EXITCODE -ne 0 ]; then
 		shj_log "Runtime Error"
-		echo "<span class=\"shj_o\">Runtime Error</span>" >>$PROBLEMPATH/$UN/result.html
+		echo "<span class=\"shj_o\">Runtime Error (Exit Code= $EXITCODE) </span>" >>$PROBLEMPATH/$UN/result.html
 		continue
 	fi
 	
@@ -547,6 +605,7 @@ for((i=1;i<=TST;i++)); do
 		fi
 		# Compare output files
 		if $DIFFTOOL $DIFFARGUMENT out correctout >/dev/null 2>/dev/null; then
+
 			ACCEPTED=true
 		fi
 	fi

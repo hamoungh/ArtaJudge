@@ -76,6 +76,7 @@ class Assignment_model extends CI_Model
 		$c_tl = $this->input->post('c_time_limit');
 		$py_tl = $this->input->post('python_time_limit');
 		$java_tl = $this->input->post('java_time_limit');
+		$cs_tl = $this->input->post('cs_time_limit');
 		$ml = $this->input->post('memory_limit');
 		$ft = $this->input->post('languages');
 		$dc = $this->input->post('diff_cmd');
@@ -98,10 +99,10 @@ class Assignment_model extends CI_Model
 				elseif ($item2 === 'pdf')
 					$item = 'PDF';
 				$item2 = strtolower($item);
-				if ( ! in_array($item2, array('c','c++','python 2','python 3','java','zip','pdf')))
+				if ( ! in_array($item2, array('c','c++','cs','python 2','python 3','java','zip','pdf')))
 					continue;
 				// If the problem is not Upload-Only, its language should be one of {C,C++,Python 2, Python 3,Java}
-				if ( ! in_array($i, $uo) && ! in_array($item2, array('c','c++','python 2','python 3','java')) )
+				if ( ! in_array($i, $uo) && ! in_array($item2, array('c','c++','cs','python 2','python 3','java')) )
 					continue;
 				$ft[$i-1] .= $item.",";
 			}
@@ -115,6 +116,7 @@ class Assignment_model extends CI_Model
 				'c_time_limit' => $c_tl[$i-1],
 				'python_time_limit' => $py_tl[$i-1],
 				'java_time_limit' => $java_tl[$i-1],
+				'cs_time_limit' => $cs_tl[$i-1],
 				'memory_limit' => $ml[$i-1],
 				'allowed_languages' => $ft[$i-1],
 				'diff_cmd' => $dc[$i-1],

@@ -14,7 +14,6 @@ class User extends CI_Model
 	public $level;
 	public $email;
 
-
 	public function __construct()
 	{
 		parent::__construct();
