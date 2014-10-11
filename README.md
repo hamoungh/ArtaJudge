@@ -38,7 +38,9 @@ For running Sharif Judge, a Linux server with following requirements is needed:
   * PHP must have permission to run shell commands using [`shell_exec()`](http://www.php.net/manual/en/function.shell-exec.php) php function (specially `shell_exec("php");`)
   * Tools for compiling and running submitted codes (`gcc`, `g++`, `javac`, `java`, `python2` and `python3` commands)
   * It is better to have `perl` installed for more precise time and memory limit and imposing size limit on output of submitted code.
-
+  * `mono-xsp2` , `mono-xsp2-base` are needed for C#.
+  * Install `sendmail` package to help you sending the backups to your email.
+  
 ## Installation
 
   1. Download the latest release from [download page](http://sharifjudge.ir/download) and unpack downloaded file in your public html directory.
@@ -50,6 +52,7 @@ For running Sharif Judge, a Linux server with following requirements is needed:
   7. Log in with your admin account.
   8. **[IMPORTANT]** Move folders `tester` and `assignments` somewhere outside your public directory. Then save their full path in `Settings` page. **These two folders must be writable by PHP.** Submitted files will be stored in `assignments` folder. So it should be somewhere not publicly accessible.
   9. **[IMPORTANT]** [Secure Sharif Judge](http://docs.sharifjudge.ir/en:v1.4:security)
+  10. **[Optional]** to activate backup from DB, Go to `application/config/config.php` and set `$config['backup_email']`, then in console type `crontab -e` and add this line `0 0 * * * sudo php /home/ubuntu/judge/application/helpers/backup.php`. Save the file. You will get backup in your email midnight of everyday.
 
 ## After Installation
 
