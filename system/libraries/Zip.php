@@ -234,7 +234,7 @@ class CI_Zip {
 	protected function _add_data($filepath, $data, $file_mtime, $file_mdate)
 	{
 		$filepath = str_replace('\\', '/', $filepath);
-
+	
 		$uncompressed_size = strlen($data);
 		$crc32  = crc32($data);
 		$gzdata = substr(gzcompress($data), 2, -4);
@@ -323,7 +323,10 @@ class CI_Zip {
 	 */
 	public function read_dir($path, $preserve_filepath = TRUE, $root_path = NULL)
 	{
+		//$path = str_replace("\\\\", "\\", $path);
+		
 		$path = rtrim($path, '/\\').DIRECTORY_SEPARATOR;
+		
 		if ( ! $fp = @opendir($path))
 		{
 			return FALSE;
@@ -349,9 +352,10 @@ class CI_Zip {
 			elseif (FALSE !== ($data = file_get_contents($path.$file)))
 			{
 				$name = str_replace(array('\\', '/'), DIRECTORY_SEPARATOR, $path);
+				
 				if ($preserve_filepath === FALSE)
 				{
-					$name = str_replace($root_path, '', $name);
+					$name = str_replace($root_path.DIRECTORY_SEPARATOR, '', $name);
 				}
 				$this->add_data($name.$file, $data);
 			}

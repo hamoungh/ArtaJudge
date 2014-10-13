@@ -142,12 +142,12 @@ class Assignments extends CI_Controller
 		for ($i=1 ; $i<=$number_of_problems ; $i++)
 		{
 
-			$path = "$root_path/p{$i}/in";
+			$path = $root_path."/p{$i}/in";
 			$this->zip->read_dir($path, FALSE, $root_path);
 
-			$path = "$root_path/p{$i}/out";
+			$path = $root_path."/p{$i}/out";
 			$this->zip->read_dir($path, FALSE, $root_path);
-
+	
 			$path = "$root_path/p{$i}/tester.cpp";
 			if (file_exists($path))
 				$this->zip->add_data("p{$i}/tester.cpp", file_get_contents($path));
