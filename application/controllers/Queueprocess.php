@@ -123,6 +123,7 @@ class Queueprocess extends CI_Controller
 			if ( is_numeric($output) || $output === 'Compilation Error' || $output === 'Syntax Error' )
 			{
 				shell_exec("mv $userdir/result.html $userdir/result-{$submit_id}.html");
+				shell_exec("mv $userdir/output.html $userdir/output-{$submit_id}.html");
 				shell_exec("mv $userdir/log $userdir/log-{$submit_id}");
 			}
 

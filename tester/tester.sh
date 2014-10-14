@@ -617,6 +617,9 @@ for((i=1;i<=TST;i++)); do
 	else
 		shj_log "WRONG"
 		echo "<span class=\"shj_r\">WRONG</span>" >>$PROBLEMPATH/$UN/result.html
+		echo "" >>$PROBLEMPATH/$UN/output.html
+		head -c1000 out >>$PROBLEMPATH/$UN/output.html
+		echo "" >>$PROBLEMPATH/$UN/output.html
 	fi
 done
 

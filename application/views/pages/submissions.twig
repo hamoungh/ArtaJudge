@@ -155,6 +155,12 @@
 							{{ submission.status }}
 						{% endif %}
 					</div>
+					{% if submission.fullmark == false  %}
+							{% if user.level > 0 %}
+									<div class="btn inline" data-type="output">Output</div>
+							{% endif %}
+					{% endif %}
+					
 				{% endif %}
 			</td>
 			<td>

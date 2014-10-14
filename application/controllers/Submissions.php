@@ -438,7 +438,7 @@ class Submissions extends CI_Controller
 
 	public function _check_type($type)
 	{
-		return ($type === 'code' || $type === 'result' || $type === 'log');
+		return ($type === 'code' || $type === 'result' || $type === 'log' || $type === 'output');
 	}
 
 
@@ -466,13 +466,16 @@ class Submissions extends CI_Controller
 			if ($submission === FALSE)
 				show_404();
 
-			$type = $this->input->post('type'); // $type is 'code', 'result', or 'log'
+			$type = $this->input->post('type'); // $type is 'code', 'result', or 'log' or 'output'
 
 			if ($this->user->level === 0 && $type === 'log')
 				show_404();
+			
+			if ($this->user->level === 0 && $type === 'output')
+				show_404();
 
 			if ($this->user->level === 0 && $this->user->username != $submission['username'])
-				exit('Don\'t try to see submitted codes :)');
+				exit('Don\'t try to see submitted codes :) :'+$this->user->level);
 
 			if ($type === 'result')
 				$file_path = rtrim($this->settings_model->get_setting('assignments_root'),'/').
@@ -483,13 +486,18 @@ class Submissions extends CI_Controller
 			elseif ($type === 'log')
 				$file_path = rtrim($this->settings_model->get_setting('assignments_root'),'/').
 					"/assignment_{$submission['assignment']}/p{$submission['problem']}/{$submission['username']}/log-{$submission['submit_id']}";
+			elseif ($type === 'output')
+				$file_path = rtrim($this->settings_model->get_setting('assignments_root'),'/').
+					"/assignment_{$submission['assignment']}/p{$submission['problem']}/{$submission['username']}/output-{$submission['submit_id']}.html";
 			else
 				$file_path = '/nowhere'; // This line is never reached!
-
+	
 			$result = array(
-				'file_name' => $submission['main_file_name'].'.'.filetype_to_extension($submission['file_type']),
-				'text' => file_exists($file_path)?file_get_contents($file_path):'File Not Found'
+					'file_name' => $submission['main_file_name'].'.'.filetype_to_extension($submission['file_type']),
+					'text' => file_exists($file_path)?file_get_contents($file_path):'File Not Found'
 			);
+			
+			
 
 			if ($type === 'code') {
 				$result['lang'] = $submission['file_type'];
