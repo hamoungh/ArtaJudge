@@ -389,7 +389,12 @@ fi
 if [ "$EXT" = "cs" ]; then
 	cp $PROBLEMPATH/$UN/$FILENAME.cs $FILENAME.cs
 	shj_log "Compiling as C#"
-	gmcs $FILENAME.cs >/dev/null 2>cerr
+	if [ -f "$PROBLEMPATH/program.cs" ]; then
+		shj_log "Main File Detected"
+		gmcs -out:$FILENAME.exe $PROBLEMPATH/program.cs $FILENAME.cs >/dev/null 2>cerr
+	else	
+		gmcs $FILENAME.cs >/dev/null 2>cerr
+	fi
 	EXITCODE=$?
 	COMPILE_END_TIME=$(($(date +%s%N)/1000000));
 	shj_log "Compiled. Exit Code=$EXITCODE  Execution Time: $((COMPILE_END_TIME-COMPILE_BEGIN_TIME)) ms"
@@ -614,12 +619,15 @@ for((i=1;i<=TST;i++)); do
 		shj_log "ACCEPTED"
 		echo "<span class=\"shj_g\">ACCEPT</span>" >>$PROBLEMPATH/$UN/result.html
 		((PASSEDTESTS=PASSEDTESTS+1))
+		echo "==TEST $i==" >>$PROBLEMPATH/$UN/output.html
+		echo "ACCEPTED" >>$PROBLEMPATH/$UN/output.html
+		echo "===========" >>$PROBLEMPATH/$UN/output.html
 	else
 		shj_log "WRONG"
 		echo "<span class=\"shj_r\">WRONG</span>" >>$PROBLEMPATH/$UN/result.html
-		echo "" >>$PROBLEMPATH/$UN/output.html
-		head -c1000 out >>$PROBLEMPATH/$UN/output.html
-		echo "" >>$PROBLEMPATH/$UN/output.html
+		echo "==TEST $i==" >>$PROBLEMPATH/$UN/output.html
+		head -c2000 out >>$PROBLEMPATH/$UN/output.html
+		echo "===========" >>$PROBLEMPATH/$UN/output.html
 	fi
 done
 

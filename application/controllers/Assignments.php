@@ -151,6 +151,23 @@ class Assignments extends CI_Controller
 			$path = "$root_path/p{$i}/tester.cpp";
 			if (file_exists($path))
 				$this->zip->add_data("p{$i}/tester.cpp", file_get_contents($path));
+			
+			//->programs that includes main file
+			$path = "$root_path/p{$i}/program.cs";
+			if (file_exists($path))
+				$this->zip->add_data("p{$i}/program.cs", file_get_contents($path));
+			
+			$path = "$root_path/p{$i}/program.cpp";
+			if (file_exists($path))
+				$this->zip->add_data("p{$i}/program.cpp", file_get_contents($path));
+			
+			$path = "$root_path/p{$i}/program.c";
+			if (file_exists($path))
+				$this->zip->add_data("p{$i}/program.c", file_get_contents($path));
+			
+			$path = "$root_path/p{$i}/program.java";
+			if (file_exists($path))
+				$this->zip->add_data("p{$i}/program.java", file_get_contents($path));
 
 			$pdf_files = glob("$root_path/p{$i}/*.pdf");
 			if ($pdf_files)
@@ -494,7 +511,7 @@ class Assignments extends CI_Controller
 
 			// Extract new test cases and descriptions in temp directory
 			$this->load->library('unzip');
-			$this->unzip->allow(array('txt', 'cpp', 'html', 'md', 'pdf'));
+			$this->unzip->allow(array('txt', 'cpp', 'html', 'md', 'pdf','cs','cpp','java','c'));
 			$extract_result = $this->unzip->extract($u_data['full_path'], $tmp_dir);
 
 			// Remove the zip file

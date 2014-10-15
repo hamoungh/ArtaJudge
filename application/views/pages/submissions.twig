@@ -69,9 +69,9 @@
 				<th width="14%" rowspan="2">Submit Time</th>
 				<th colspan="3">Score</th>
 				<th width="1%" rowspan="2">Language</th>
-				<th width="6%" rowspan="2">Status</th>
-				<th width="6%" rowspan="2">Code</th>
-				<th width="6%" rowspan="2">Log</th>
+				<th width="8%" rowspan="2">Status</th>
+				<th width="5%" rowspan="2">Code</th>
+				<th width="5%" rowspan="2">Log</th>
 				{% if user.level >= 2 %}
 				<th width="1%" rowspan="2">Actions</th>
 				{% endif %}
@@ -156,8 +156,10 @@
 						{% endif %}
 					</div>
 					{% if submission.fullmark == false  %}
-							{% if user.level > 0 %}
-									<div class="btn inline" data-type="output">Output</div>
+							{% if  submission_class != 'btn shj-blue'  %}
+								{% if user.level > 0 %}
+									<div title="Output" class="btn fa fa-file" data-type="output"></div>
+								{% endif %}
 							{% endif %}
 					{% endif %}
 					
