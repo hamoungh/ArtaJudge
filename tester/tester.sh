@@ -208,7 +208,13 @@ if [ "$EXT" = "java" ]; then
 	cp ../java.policy java.policy
 	cp $PROBLEMPATH/$UN/$FILENAME.java $MAINFILENAME.java
 	shj_log "Compiling as Java"
-	javac $MAINFILENAME.java >/dev/null 2>cerr
+	if [ -f "$PROBLEMPATH/program.java" ]; then
+		shj_log "Main File Detected"
+		javac $MAINFILENAME.java $PROBLEMPATH/program.java >/dev/null 2>cerr
+		MAINFILENAME="program"
+	else	
+		javac $MAINFILENAME.java >/dev/null 2>cerr
+	fi
 	EXITCODE=$?
 	COMPILE_END_TIME=$(($(date +%s%N)/1000000));
 	shj_log "Compiled. Exit Code=$EXITCODE  Execution Time: $((COMPILE_END_TIME-COMPILE_BEGIN_TIME)) ms"
@@ -472,14 +478,13 @@ for((i=1;i<=TST;i++)); do
 		fi
 		if grep -q -m 1 "Exception in" err; then # show Exception
 			javaexceptionname=`grep -m 1 "Exception in" err | grep -m 1 -oE 'java\.[a-zA-Z\.]*' | head -1 | head -c 80`
-			javaexceptionplace=`grep -m 1 "$MAINFILENAME.java" err | head -1 | head -c 80`
+			#javaexceptionplace=`grep -m 1 "$MAINFILENAME.java" err | head -1 | head -c 80`
+			javaexceptionplace=`grep -m 1 ".java" err `
 			shj_log "Exception: $javaexceptionname\nMaybe at:$javaexceptionplace"
 			# if DISPLAY_JAVA_EXCEPTION_ON is true and the exception is in the trusted list, we show the exception name
 			if $DISPLAY_JAVA_EXCEPTION_ON && grep -q -m 1 "^$javaexceptionname\$" ../java_exceptions_list; then
 				echo "<span class=\"shj_o\">Runtime Error ($javaexceptionname)</span>" >>$PROBLEMPATH/$UN/result.html
 			else
-
-
 				echo "<span class=\"shj_o\">Runtime Error</span>" >>$PROBLEMPATH/$UN/result.html
 			fi
 			continue
