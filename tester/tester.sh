@@ -207,6 +207,8 @@ COMPILE_BEGIN_TIME=$(($(date +%s%N)/1000000));
 if [ "$EXT" = "java" ]; then
 	cp ../java.policy java.policy
 	cp $PROBLEMPATH/$UN/$FILENAME.java $MAINFILENAME.java
+	#removes any package name from user provided file to prevent runtime error.
+	sed -i 0,/package[[:space:][:alnum:]\.\;]*/{s/package[[:space:][:alnum:]\.\;]*//}  $MAINFILENAME.java
 	shj_log "Compiling as Java"
 	if [ -f "$PROBLEMPATH/program.java" ]; then
 		shj_log "Main File Detected"
