@@ -1,6 +1,6 @@
-# Sharif Judge
+# ArtaJudge
 
-[Sharif Judge](http://sharifjudge.ir) is a free and open source online judge for C, C++, Java and
+*ArtaJudge* is a free and open source online judge based on Sharif Judge for C, C++,C#, Java and
 Python programming courses.
 
 The web interface is written in PHP (CodeIgniter framework) and the main backend is written in BASH.
@@ -20,7 +20,7 @@ Download the latest release from [http://sharifjudge.ir/download](http://sharifj
   * Submission queue
   * Download results in excel file
   * Download submitted codes in zip file
-  * _"Output Comparison"_ and _"Tester Code"_ methods for checking output correctness
+  * _"Output Comparison"_ , _"Tester Code"_ and _"Main Code Testing"_ methods for checking output correctness
   * Add multiple users
   * Problem Descriptions (PDF/Markdown/HTML)
   * Rejudge
@@ -43,7 +43,7 @@ For running Sharif Judge, a Linux server with following requirements is needed:
   
 ## Installation
 
-  1. Download the latest release from [download page](http://sharifjudge.ir/download) and unpack downloaded file in your public html directory.
+  1. Download the latest release from this repository and unpack downloaded file in your public html directory.
   2. **[Optional]** Move folders `system` and `application` somewhere outside your public directory. Then save their full path in `index.php` file (`$system_path` and `$application_folder` variables).
   3. Create a MySql or PostgreSql database for Sharif Judge. Do not install any database connection package for C/C++, Java or Python.
   4. Set database connection settings in `application/config/database.php`.
@@ -56,7 +56,7 @@ For running Sharif Judge, a Linux server with following requirements is needed:
 
 ## After Installation
 
-  * Read the [documentation](http://docs.sharifjudge.ir)
+  * Read the original [documentation](http://docs.sharifjudge.ir)
 
 ## License
 
