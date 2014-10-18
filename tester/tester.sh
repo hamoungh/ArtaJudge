@@ -338,12 +338,22 @@ if [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
 			cp ../shield/def$EXT.h def.h
 			# adding define to beginning of code:
 			echo '#define main themainmainfunction' | cat - code.c > thetemp && mv thetemp code.c
-			$COMPILER shield.$EXT $C_OPTIONS $C_WARNING_OPTION -o $EXEFILE >/dev/null 2>cerr
+			if [ -f "$PROBLEMPATH/program.$EXT" ]; then
+				shj_log "Main File Detected"
+				$COMPILER program.$EXT shield.$EXT $C_OPTIONS $C_WARNING_OPTION -o $EXEFILE >/dev/null 2>cerr
+			else
+				$COMPILER shield.$EXT $C_OPTIONS $C_WARNING_OPTION -o $EXEFILE >/dev/null 2>cerr
+			fi
 			EXITCODE=$?
 		fi
 	else
 		mv code.c code.$EXT
-		$COMPILER code.$EXT $C_OPTIONS $C_WARNING_OPTION -o $EXEFILE >/dev/null 2>cerr
+		if [ -f "$PROBLEMPATH/program.$EXT" ]; then
+			shj_log "Main File Detected"
+			$COMPILER program.$EXT code.$EXT $C_OPTIONS $C_WARNING_OPTION -o $EXEFILE >/dev/null 2>cerr
+		else
+			$COMPILER code.$EXT $C_OPTIONS $C_WARNING_OPTION -o $EXEFILE >/dev/null 2>cerr
+		fi
 		EXITCODE=$?
 	fi
 	COMPILE_END_TIME=$(($(date +%s%N)/1000000));
