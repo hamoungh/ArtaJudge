@@ -210,8 +210,8 @@ if [ "$EXT" = "java" ]; then
 	shj_log "Compiling as Java"
 	if [ -f "$PROBLEMPATH/program.java" ]; then
 		shj_log "Main File Detected"
-		javac $MAINFILENAME.java $PROBLEMPATH/program.java >/dev/null 2>cerr
-		MAINFILENAME="program"
+		javac -d . $MAINFILENAME.java $PROBLEMPATH/program.java >/dev/null 2>cerr
+		cp $PROBLEMPATH/program.java program.java
 	else	
 		javac $MAINFILENAME.java >/dev/null 2>cerr
 	fi
@@ -465,12 +465,21 @@ for((i=1;i<=TST;i++)); do
 	touch err
 	
 	if [ "$EXT" = "java" ]; then
-		if $PERL_EXISTS; then
-			./runcode.sh $EXT $MEMLIMIT $TIMELIMIT $TIMELIMITINT $PROBLEMPATH/in/input$i.txt "./timeout --just-kill -nosandbox -l $OUTLIMIT -t $TIMELIMIT java -mx${MEMLIMIT}k $JAVA_POLICY $MAINFILENAME"
+		if [ -f "$PROBLEMPATH/program.java" ]; then
+			if $PERL_EXISTS; then
+				./runcode.sh $EXT $MEMLIMIT $TIMELIMIT $TIMELIMITINT $PROBLEMPATH/in/input$i.txt "./timeout --just-kill -nosandbox -l $OUTLIMIT -t $TIMELIMIT java -mx${MEMLIMIT}k $JAVA_POLICY program"
+			else
+				./runcode.sh $EXT $MEMLIMIT $TIMELIMIT $TIMELIMITINT $PROBLEMPATH/in/input$i.txt "java -mx${MEMLIMIT}k $JAVA_POLICY program"
+			fi
 		else
-			./runcode.sh $EXT $MEMLIMIT $TIMELIMIT $TIMELIMITINT $PROBLEMPATH/in/input$i.txt "java -mx${MEMLIMIT}k $JAVA_POLICY $MAINFILENAME"
+			if $PERL_EXISTS; then
+				./runcode.sh $EXT $MEMLIMIT $TIMELIMIT $TIMELIMITINT $PROBLEMPATH/in/input$i.txt "./timeout --just-kill -nosandbox -l $OUTLIMIT -t $TIMELIMIT java -mx${MEMLIMIT}k $JAVA_POLICY $MAINFILENAME"
+			else
+				./runcode.sh $EXT $MEMLIMIT $TIMELIMIT $TIMELIMITINT $PROBLEMPATH/in/input$i.txt "java -mx${MEMLIMIT}k $JAVA_POLICY $MAINFILENAME"
+			fi
 		fi
 		EXITCODE=$?
+		
 		if grep -iq -m 1 "Too small initial heap" out || grep -q -m 1 "java.lang.OutOfMemoryError" err; then
 			shj_log "Memory Limit Exceeded"
 			echo "<span class=\"shj_o\">Memory Limit Exceeded</span>" >>$PROBLEMPATH/$UN/result.html
@@ -651,7 +660,7 @@ done
 
 cd ..
 rm -r $JAIL >/dev/null 2>/dev/null # removing files
-
+rm *.class
 ((SCORE=PASSEDTESTS*10000/TST)) # give score from 10,000
 shj_log "\nScore from 10000: $SCORE"
 
