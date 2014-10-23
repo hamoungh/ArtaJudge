@@ -51,7 +51,9 @@ class Assignment_model extends CI_Model
 			'finish_time' => date('Y-m-d H:i:s', strtotime($this->input->post('finish_time'))),
 			'extra_time' => $extra_time*60,
 			'late_rule' => $this->input->post('late_rule'),
-			'participants' => $this->input->post('participants')
+			'participants' => $this->input->post('participants'),
+			'published' => 	($this->input->post('visible')===NULL?0:1)
+				
 		);
 		if($edit)
 		{
@@ -188,6 +190,8 @@ class Assignment_model extends CI_Model
 		foreach ($result as $item)
 		{
 			$assignments[$item['id']] = $item;
+			if(time() >  strtotime($item['start_time']) && strtotime($item['finish_time']) > time() )
+				$assignments[$item['id']]['total_duration'] = shj_sectohuman(strtotime($item['finish_time']) - time());
 		}
 		return $assignments;
 	}
@@ -283,6 +287,7 @@ class Assignment_model extends CI_Model
 				'name' => 'Not Selected',
 				'finish_time' => 0,
 				'extra_time' => 0,
+				'published' => 0,
 				'problems' => 0
 			);
 		return $query->row_array();

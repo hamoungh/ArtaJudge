@@ -145,7 +145,43 @@ if ( ! function_exists('shj_basename'))
 		return preg_replace('$^.*[\\\\/]$', '', $path);
 	}
 }
-
-
+if ( ! function_exists('shj_sectohuman'))
+{
+	function shj_sectohuman($duration)
+	{
+		
+		 $periods = array(
+        'year' => 31556926,
+				'month' => 2629743,
+				'week' => 604800,
+				'day' => 86400,
+				'hour' => 3600,
+				'minute' => 60,
+				'second' => 1
+	    );
+	 
+	    $parts = array();
+	 
+	    foreach ($periods as $name => $dur) {
+	        $div = floor($duration / $dur);
+	 
+	        if ($div == 0)
+	            continue;
+	        else
+	            if ($div == 1)
+	                $parts[] = $div . " " . $name;
+	            else
+	                $parts[] = $div . " " . $name . "s";
+	        $duration %= $dur;
+	    }
+	 
+	    $last = array_pop($parts);
+	 
+	    if (empty($parts))
+	        return $last;
+	    else
+	        return join(', ', $parts) . " and " . $last;
+	}
+}
 /* End of file shj_helper.php */
 /* Location: ./application/helpers/shj_helper.php */

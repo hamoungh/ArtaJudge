@@ -137,6 +137,12 @@
 </div>
 <div class="panel_right">
 	<p class="input_p">
+		<input id="form_a_visible" type="checkbox" name="visible" value="1" {{ edit ? (edit_assignment.published ? 'checked') : set_checkbox('visible', '1')|raw }} />
+		<label for="form_a_visible" class="default">Visible</label>
+		<span class="form_comment space-left">Should this assignment be visible to students now?</span>
+		{{ form_error('visible', '<div class="shj_error">', '</div>') }}
+	</p>
+	<p class="input_p">
 		<input id="form_a_open" type="checkbox" name="open" value="1" {{ edit ? (edit_assignment.open ? 'checked') : set_checkbox('open', '1')|raw }} />
 		<label for="form_a_open" class="default">Open</label>
 		<span class="form_comment space-left">Open or close this assignment</span>

@@ -36,14 +36,14 @@
 	<th>Name</th>
 	{% if user.level > 0 %}
 	<th>Problems</th> 
-	{% endif %}
 	<th>Submissions</th>
+	{% endif %}
 	<th>Coefficient</th>
-	<th>Start Time</th>
-	<th>Finish Time</th>
+	<th>Duration</th>
 	<th>Status</th>
-	<th>PDF</th>
+	<th>Select</th>
 	{% if user.level > 0 %}
+	<th>Visible</th>
 	<th>Actions</th>
 	{% endif %}
 </tr>
@@ -54,19 +54,24 @@
 	<td dir="auto">{{ item.name }}</td>
 	{% if user.level > 0 %}
 	<td><a href="{{ site_url('problems/'~item.id) }}">{{ item.problems }} problem{{ item.problems != 1 ? 's' }}</a></td>
-	{% endif %} 
 	<td>{{ item.total_submits }} submission{{ item.total_submits != 1 ? 's' }}</td>
+	{% endif %} 
 	<td>
 		{% if item.finished %}
-			<span style="color: red;">Finished</span>
+			<span style="color: red;">-</span>
 		{% else %}
 			{{ item.coefficient }} %
 		{% endif %}
 	</td>
-	<td>{{ item.start_time }}</td>
-	<td>{{ item.finish_time }}</td>
+	<td>{{ item.start_time }} - {{ item.finish_time }} 
+		{% if item.total_duration %}
+			<br> 	<i>{{ item.total_duration }} from now</i>
+		{% endif %}
+	</td>
 	<td>
-		{% if item.open %}
+		{% if item.finished %}
+			<span style="color: red;">Finished</span>
+		{% elseif item.open %}
 			<span style="color: green;">Open</span>
 		{% else %}
 			<span style="color: red;">Close</span>
@@ -76,6 +81,7 @@
 		<a href="{{ site_url('assignments/pdf/'~item.id) }}"><img src="{{ base_url('assets/images/pdf.svg') }}" /></a>
 	</td>
 	{% if user.level > 0 %}
+	<td><i class="pointer publish_assignment fa {{ item.published == 1 ? 'fa-check-square-o color6' : 'fa-square-o' }} fa-2x" data-id="{{ item.id }}"></i></td>
 	<td>
 		{% if user.level >= 2 %}
 			<a href="{{ site_url('assignments/downloadtestsdesc/'~item.id) }}"><i title="Download Tests and Descriptions" class="fa fa-cloud-download fa-lg color11"></i></a>

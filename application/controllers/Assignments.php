@@ -39,8 +39,13 @@ class Assignments extends CI_Controller
 			'messages' => $this->messages,
 		);
 
-		foreach ($data['all_assignments'] as &$item)
+		foreach ($data['all_assignments'] as $k => &$item)
 		{
+			if ($this->user->level == 0 && $item['published'] == "0"){ //skip all invisibles
+				unset($data['all_assignments'][$k]);
+				continue;
+			}
+				
 			$extra_time = $item['extra_time'];
 			$delay = shj_now()-strtotime($item['finish_time']);;
 			ob_start();
@@ -88,6 +93,43 @@ class Assignments extends CI_Controller
 		echo json_encode($json_result);
 	}
 
+	// ------------------------------------------------------------------------
+	
+	
+	/**
+	 * Used by ajax request (for select assignment from top bar)
+	 */
+	public function publish()
+	{
+		if ( $this->user->level == 0) // permission denied
+			show_404();
+	
+		if ( ! $this->input->is_ajax_request() )
+			show_404();
+	
+		$this->form_validation->set_rules('assignment_publish', 'Assignment', 'required|integer|greater_than[0]');
+	
+		if ($this->form_validation->run())
+		{
+			//$this->user->select_assignment($this->input->post('assignment_publish'));
+			$this->assignment = $this->assignment_model->assignment_info($this->input->post('assignment_publish'));
+			if($this->assignment['published'] == 0){
+				$this->assignment['published']=1;
+			}else{
+				$this->assignment['published']=0;
+			}
+			$this->db->where('id', $this->assignment['id'])->update('assignments', $this->assignment);
+				
+			$json_result = array(
+					'done' => 1,
+			);
+		}
+		else
+			$json_result = array('done' => 0, 'message' => 'Input Error');
+	
+		$this->output->set_header('Content-Type: application/json; charset=utf-8');
+		echo json_encode($json_result);
+	}
 
 
 	// ------------------------------------------------------------------------

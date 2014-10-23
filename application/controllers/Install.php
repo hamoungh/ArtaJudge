@@ -103,6 +103,7 @@ class Install extends CI_Controller
 				'finish_time'   => array('type' => $DATETIME),
 				'extra_time'    => array('type' => 'INT', 'constraint' => 11),
 				'late_rule'     => array('type' => 'TEXT'),
+				'published'     => array('type' => 'INT', 'constraint' => 11, 'default' => '1'),
 				'participants'  => array('type' => 'TEXT', 'default' => ''),
 				'moss_update'   => array('type' => 'VARCHAR', 'constraint' => 30, 'default' => 'Never'),
 			);
