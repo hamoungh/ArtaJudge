@@ -136,6 +136,8 @@ class Submit extends CI_Controller
 		elseif ($this->user->level == 0 && ! $this->user->selected_assignment['open'])
 			// if assignment is closed, non-student users (admin, instructors) still can submit
 			$this->data['error'] = 'Selected assignment is closed.';
+		elseif ($this->user->level == 0 && ! $this->user->selected_assignment['published'])
+			$this->data['error'] = 'Selected assignment is not accessible for students.';
 		elseif (shj_now() < strtotime($this->user->selected_assignment['start_time']))
 			$this->data['error'] = 'Selected assignment has not started.';
 		elseif (shj_now() > strtotime($this->user->selected_assignment['finish_time'])+$this->user->selected_assignment['extra_time']) // deadline = finish_time + extra_time

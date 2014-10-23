@@ -44,7 +44,10 @@ class Problems extends CI_Controller
 			show_error('No assignment selected.');
 
 		$assignment = $this->assignment_model->assignment_info($assignment_id);
-
+		
+		if (!$assignment['visible'] &&  $this->user->level == 0)
+			show_error('Assignment not accessible anymore for students.');
+					
 		$data = array(
 			'all_assignments' => $this->all_assignments,
 			'all_problems' => $this->assignment_model->all_problems($assignment_id),
@@ -72,6 +75,7 @@ class Problems extends CI_Controller
 
 		if ( $assignment['id'] == 0
 			OR ( $this->user->level == 0 && ! $assignment['open'] )
+			OR ( $this->user->level == 0 && ! $assignment['visible'] )
 			OR shj_now() < strtotime($assignment['start_time'])
 			OR shj_now() > strtotime($assignment['finish_time'])+$assignment['extra_time'] // deadline = finish_time + extra_time
 			OR ! $this->assignment_model->is_participant($assignment['participants'], $this->user->username)
