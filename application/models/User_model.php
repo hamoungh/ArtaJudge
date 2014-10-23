@@ -408,7 +408,16 @@ class User_model extends CI_Model
 			'display_name' => $this->input->post('display_name'),
 			'email' => $this->input->post('email')
 		);
-
+		
+		if ($this->input->post('name') !== NULL)
+			$user['name'] = $this->input->post('name');
+		if ($this->input->post('family') !== NULL)
+			$user['family'] = $this->input->post('family');
+		if ($this->input->post('institution') !== NULL)
+			$user['institution'] = $this->input->post('institution');
+		if ($this->input->post('student_id') !== NULL)
+			$user['student_id'] = $this->input->post('student_id');
+		
 		// if a role is provided, change the role
 		// (only admins are able to provide a role)
 		if ($this->input->post('role') !== NULL)

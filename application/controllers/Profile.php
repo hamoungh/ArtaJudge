@@ -46,7 +46,12 @@ class Profile extends CI_Controller
 		if ($this->user->level <= 2 && $this->user->username != $this->edit_username) // permission denied
 			show_404();
 
-		$this->form_validation->set_rules('display_name', 'name', 'max_length[40]');
+		$this->form_validation->set_rules('display_name', 'Display Name', 'max_length[40]');
+		$this->form_validation->set_rules('name', 'Name', 'max_length[255]|required');
+		$this->form_validation->set_rules('family', 'Family', 'max_length[255]|required');
+		$this->form_validation->set_rules('institution', 'Institution', 'max_length[100]');
+		$this->form_validation->set_rules('student_id', 'Student Number', 'max_length[50]|numeric|required');
+		
 		$this->form_validation->set_rules('email', 'email address', 'required|max_length[40]|valid_email|callback__email_check', array('_email_check' => 'This %s already exists.'));
 		$this->form_validation->set_rules('password', 'password', 'callback__password_check', array('_password_check' => 'The %s field must be between 6 and 200 characters in length.'));
 		$this->form_validation->set_rules('password_again', 'password confirmation', 'callback__password_again_check', array('_password_again_check' => 'The %s field does not match the password field.'));
@@ -60,6 +65,10 @@ class Profile extends CI_Controller
 			'all_assignments' => $this->assignment_model->all_assignments(),
 			'id' => $user_id,
 			'edit_username' => $this->edit_username,
+			'name' => $user->name,
+			'family' => $user->family,
+			'institution' => $user->institution,
+			'student_id' => $user->student_id,
 			'email' => $user->email,
 			'display_name' => $user->display_name,
 			'role' => $user->role,
