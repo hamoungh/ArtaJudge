@@ -34,7 +34,9 @@
 <tr>
 	<th>Select</th>
 	<th>Name</th>
-	<th>Problems</th>
+	{% if user.level > 0 %}
+	<th>Problems</th> 
+	{% endif %}
 	<th>Submissions</th>
 	<th>Coefficient</th>
 	<th>Start Time</th>
@@ -50,7 +52,9 @@
 <tr>
 	<td><i class="pointer select_assignment fa {{ item.id == user.selected_assignment.id ? 'fa-check-square-o color6' : 'fa-square-o' }} fa-2x" data-id="{{ item.id }}"></i></td>
 	<td dir="auto">{{ item.name }}</td>
+	{% if user.level > 0 %}
 	<td><a href="{{ site_url('problems/'~item.id) }}">{{ item.problems }} problem{{ item.problems != 1 ? 's' }}</a></td>
+	{% endif %} 
 	<td>{{ item.total_submits }} submission{{ item.total_submits != 1 ? 's' }}</td>
 	<td>
 		{% if item.finished %}

@@ -375,6 +375,10 @@ $(document).ready(function () {
 						shj.finish_time = moment(response.finish_time);
 						shj.extra_time  = moment.duration(parseInt(response.extra_time, 10), 'seconds');
 						shj.update_clock();
+						var pathname = window.location.href; 
+						if (pathname.toLowerCase().indexOf("/problems") >= -1){
+							window.location.replace(shj.site_url +"problems/"+id);
+						}
 					}
 					else
 						shj.loading_failed(response.message);
