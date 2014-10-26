@@ -409,9 +409,9 @@ if [ "$EXT" = "cs" ]; then
 	shj_log "Compiling as C#"
 	if [ -f "$PROBLEMPATH/program.cs" ]; then
 		shj_log "Main File Detected"
-		gmcs -out:$FILENAME.exe $PROBLEMPATH/program.cs $FILENAME.cs >/dev/null 2>cerr
+		mcs -out:$FILENAME.exe $PROBLEMPATH/program.cs $FILENAME.cs >/dev/null 2>cerr
 	else	
-		gmcs $FILENAME.cs >/dev/null 2>cerr
+		mcs $FILENAME.cs >/dev/null 2>cerr
 	fi
 	EXITCODE=$?
 	COMPILE_END_TIME=$(($(date +%s%N)/1000000));
