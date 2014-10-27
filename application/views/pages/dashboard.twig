@@ -6,7 +6,7 @@
 {% set selected = 'dashboard' %}
 {% extends 'templates/base.twig' %}
 {% block icon %}fa-dashboard{% endblock %}
-{% block title %}Dashboard{% endblock %}
+{% block title %}Welcome,  {{ user.username }}{% endblock %}
 {% block head_title %}Dashboard{% endblock %}
 
 
@@ -59,6 +59,10 @@ $(document).ready(function () {
 		}
 	}).data('gridster');
 	$('.notif_text').ellipsis();
+	$('#new_enrollment').click(function(e){
+		e.preventDefault();
+		$('#enrollment_form').slideToggle()
+	});
 });
 </script>
 {% endblock %}
@@ -73,6 +77,71 @@ $(document).ready(function () {
 <div class="gridster">
 	<?php $i = 0; ?>
 	<ul>
+		<li data-row="{{ wp[0] ? wp[0]['r'] : '1' }}" data-col="{{ wp[0] ? wp[0]['c'] : '1' }}" data-sizex="{{ wp[0] ? wp[0]['x'] : '1' }}" data-sizey="{{ wp[0] ? wp[0]['y'] : '1' }}">
+			<div class="shj_widget">
+				<div class="widget_title"><i class="fa fa-group fa-lg color10"></i> Courses
+			
+						<a title="New Enrollment" id="new_enrollment" href="#" class="pull-right">
+							<i class="fa fa-plus color11"></i> New Enrollment
+						</a>
+				
+				
+				</div>
+				<div class="widget_scrollable scroll-wrapper">
+					<div class="scroll-content">
+						<div class="widget_contents_container" id='courses' style="padding:5px 5px;">
+							<div id="enrollment_form" style="display: none;">
+							{% if all_courses|length == 0 %}
+									<p style="text-align: center;">Nothing to Enroll Anymore...</p>
+							{% else %}
+							{{ form_open_multipart( 'dashboard/enroll') }}	
+							<p class="input_p">
+								<label for="form_a_name">Course Name:
+										<span class="form_comment space-right"></span>
+								</label>
+								<select id="form_a_name" name="course_id" class="sharif_input medium" >
+									{% for course in all_courses %}
+										<option value="{{ course.id }}" >{{ course.name }}</option>
+									{% endfor %}
+								
+									
+								</select>
+								{{ form_error('course_name', '<div class="shj_error">', '</div>') }}
+							</p>
+							<p class="input_p">
+								<label for="form_a_name">Key:
+										<span class="form_comment space-right">Get it from instructor</span>
+								</label>
+								<input id="form_a_name" type="text" name="enrollment_key" class="sharif_input medium" />
+								{{ form_error('enrollment_key', '<div class="shj_error">', '</div>') }}
+							</p>
+							<p class="input_p">
+								<input type="submit" value="Go" class="sharif_input"/>
+							</p>
+							</form>
+							{% endif %}
+							<hr>
+							</div>
+						
+								{% if courses|length == 0 %}
+									<p style="text-align: center;">Nothing yet...</p>
+								{% endif %}
+								{% for course in courses %}
+									<div class="cours" id="number{{ course.id }}" data-id="{{ course.id }}">
+										<div class="course_title" dir="auto">
+											<span class="anchor ttl_n">[{{ course.shortname }}] {{ course.name }} </span>
+											<span class="notif_meta" dir="ltr">
+											</span>
+										</div>
+										<div class="course_text latest" dir="auto">{{ course.description }}</div>
+									</div>
+								{% endfor %}
+						
+						</div>
+					</div>
+				</div>
+			</div>
+		</li>
 		<li data-row="{{ wp[0] ? wp[0]['r'] : '1' }}" data-col="{{ wp[0] ? wp[0]['c'] : '1' }}" data-sizex="{{ wp[0] ? wp[0]['x'] : '1' }}" data-sizey="{{ wp[0] ? wp[0]['y'] : '1' }}">
 			<div class="shj_widget">
 				<div class="widget_title"><i class="fa fa-calendar-o fa-lg color10"></i> Calendar</div>

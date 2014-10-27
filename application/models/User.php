@@ -8,9 +8,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class User extends CI_Model
 {
-
+	public $id;
 	public $username;
 	public $selected_assignment;
+	public $selected_classroom;
 	public $level;
 	public $email;
 
@@ -22,12 +23,13 @@ class User extends CI_Model
 			return;
 
 		$user = $this->db
-			->select('selected_assignment, role, email')
+			->select('selected_assignment, selected_classroom, role, email, id')
 			->get_where('users', array('username' => $this->username))
 			->row();
 
 		$this->email = $user->email;
-
+		$this->id = $user->id;
+		
 		$query = $this->db->get_where('assignments', array('id' => $user->selected_assignment));
 		if ($query->num_rows() != 1)
 			$this->selected_assignment = array(
@@ -39,7 +41,16 @@ class User extends CI_Model
 			);
 		else
 			$this->selected_assignment = $query->row_array();
-
+		
+		$query = $this->db->get_where('classrooms', array('id' => $user->selected_classroom));
+		if ($query->num_rows() != 1)
+			$this->selected_classroom = array(
+					'id' => 0,
+					'name' => 'Not Selected',
+			);
+			else
+				$this->selected_classroom = $query->row_array();
+		
 		switch ($user->role)
 		{
 			case 'admin': $this->level = 3; break;
