@@ -126,8 +126,9 @@ class Twig
 	 */
 	public function ci_function_init()
 	{
+		global $config;
 		$this->twig->addGlobal('SHJ_VERSION', SHJ_VERSION);
-
+		$this->twig->addGlobal('institution_logo', $config['institution_logo']);
 		/* Functions */
 		$this->twig->addFunction('base_url', new Twig_Function_Function('base_url', array('is_safe' => array('html'))));
 		$this->twig->addFunction('site_url', new Twig_Function_Function('site_url', array('is_safe' => array('html'))));

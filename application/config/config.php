@@ -280,7 +280,7 @@ $config['cache_path'] = '';
 | http://codeigniter.com/user_guide/libraries/sessions.html
 |
 */
-$config['encryption_key'] = 'PLEASE_CHANGE_ME_TO_A_RANDOM_KEY';
+$config['encryption_key'] = 'CR23D9uFKbmsfBP5ZdoXixNvykUYSGj6';
 
 /*
 |--------------------------------------------------------------------------

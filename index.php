@@ -53,7 +53,7 @@ define('SHJ_VERSION','1.4');
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
+	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 
 /*
  *---------------------------------------------------------------
@@ -81,6 +81,8 @@ switch (ENVIRONMENT)
 		echo 'The application environment is not set correctly.';
 		exit(1); // EXIT_* constants not yet defined; 1 is EXIT_ERROR, a generic error.
 }
+
+
 
 /*
  *---------------------------------------------------------------
@@ -274,7 +276,23 @@ switch (ENVIRONMENT)
 	}
 
 	define('VIEWPATH', $view_folder);
+	
+	/*
+	 *---------------------------------------------------------------
+	* Colleges specific configuration
+	*---------------------------------------------------------------
+	*
+	*/
+	 $domain =$_SERVER['SERVER_NAME']; // Or other method to get a URL for decomposition
 
+	 $subdomain = substr($domain, 0, strpos($domain, '.'));
+	if(file_exists($application_folder."/config/".$subdomain)){
+		@include_once $application_folder."/config/".$subdomain."/config.php";
+	}else{
+		
+	}
+	
+	
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE

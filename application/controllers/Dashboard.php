@@ -51,6 +51,7 @@ class Dashboard extends CI_Controller
 			elseif ( ! is_writable($path))
 				array_push($data['errors'], 'The folder <code>"'.$path.'"</code> is not writable by PHP. Make it writable. But make sure that this folder is only accessible by you.');
 		}
+		$data['errors']=null;
 		if($this->user->level >= 0){
 			//$data['classrooms'] = $this->classroom_model->all_classrooms();	
 		}

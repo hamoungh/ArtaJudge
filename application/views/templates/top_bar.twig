@@ -39,11 +39,18 @@
 			<span>Extra</span><br><span>Time</span>
 		</div>
 	</div>
+	
 	<div id="shj_logo" class="top_left">
+		
 		<a href="{{ site_url('/') }}">
 			<img src="{{ base_url('assets/images/paperplane.svg') }}"/>
 			<h1 class="shjlogo-text">Arta <span>Judge</span></h1>
 		</a>
+	</div>
+	<div class="top_left top_object">
+	{%  if institution_logo %}
+		<img src="{{ base_url(institution_logo) }}" >
+	{% endif %}
 	</div>
 	{%  if user.level >= 2 %}
 	<div class="top_object shj_menu top_left" id="admin_tools_top">
