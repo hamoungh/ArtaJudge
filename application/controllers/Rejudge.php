@@ -24,13 +24,14 @@ class Rejudge extends CI_Controller
 	// ------------------------------------------------------------------------
 
 
-	public function index()
+	public function index($classroom_id)
 	{
 
 		$this->form_validation->set_rules('problem_id', 'problem id', 'required|integer');
 
 		$data = array(
-			'all_assignments' => $this->assignment_model->all_assignments(),
+			//'all_assignments' => $this->assignment_model->all_assignments(),
+			'all_assignments' => $this->assignment_model->all_assignments_by_classroom($classroom_id),
 			'problems' => $this->problems,
 			'msg' => array()
 		);

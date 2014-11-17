@@ -32,11 +32,19 @@ class Assignments extends CI_Controller
 	// ------------------------------------------------------------------------
 
 
-	public function index()
+	public function index($classroom_id)
 	{
+		$message= $this->session->flashdata('message');
+		if($message){
+			$this->messages[]= array("type"=>"notice", "text"=>$message);
+		}
+		$this->user->set_selected_assignment($classroom_id);
+		
 		$data = array(
-			'all_assignments' => $this->assignment_model->all_assignments(),
+			'all_assignments' => $this->assignment_model->all_assignments_by_classroom($classroom_id),
 			'messages' => $this->messages,
+			'classroom' => $this->classroom_model->get_classroom($classroom_id),
+			
 		);
 
 		foreach ($data['all_assignments'] as $k => &$item)
@@ -57,7 +65,8 @@ class Assignments extends CI_Controller
 			$item['coefficient'] = $coefficient;
 			$item['finished'] = ($delay > $extra_time);
 		}
-
+		$this->user->set_selected_assignment($classroom_id);
+		
 		$this->twig->display('pages/assignments.twig', $data);
 
 	}
@@ -75,10 +84,11 @@ class Assignments extends CI_Controller
 			show_404();
 
 		$this->form_validation->set_rules('assignment_select', 'Assignment', 'required|integer|greater_than[0]');
-
+		$this->form_validation->set_rules('classroom_id', 'classroom', 'required|integer|greater_than[0]');
+		
 		if ($this->form_validation->run())
 		{
-			$this->user->select_assignment($this->input->post('assignment_select'));
+			$this->user->select_assignment($this->input->post('classroom_id'),$this->input->post('assignment_select'));
 			$this->assignment = $this->assignment_model->assignment_info($this->input->post('assignment_select'));
 			$json_result = array(
 				'done' => 1,
@@ -303,7 +313,7 @@ class Assignments extends CI_Controller
 		}
 
 		$data = array(
-			'all_assignments' => $this->assignment_model->all_assignments(),
+			'all_assignments' =>$this->assignment_model->all_assignments_by_classroom($classroom_id),
 			'id' => $assignment_id,
 			'name' => $assignment['name']
 		);
@@ -320,30 +330,31 @@ class Assignments extends CI_Controller
 	/**
 	 * This method gets inputs from user for adding/editing assignment
 	 */
-	public function add()
+	public function add($classroom_id)
 	{
 
 		if ($this->user->level <= 1) // permission denied
 			show_404();
 
 		$this->load->library('upload');
-
+		
 		if ( ! empty($_POST) )
 			if ($this->_add()) // add/edit assignment
 			{
 				//if ( ! $this->edit) // if adding assignment (not editing)
 				//{
 				//   goto Assignments page
-					$this->index();
+					$this->index($this->input->post('classroom_id'));
 					return;
 				//}
 			}
 
 		$data = array(
-			'all_assignments' => $this->assignment_model->all_assignments(),
+			'all_assignments' => $this->assignment_model->all_assignments_by_classroom($classroom_id),
 			'messages' => $this->messages,
 			'edit' => $this->edit,
 			'default_late_rule' => $this->settings_model->get_setting('default_late_rule'),
+			'classroom' => $this->classroom_model->get_classroom($classroom_id)
 		);
 
 		if ($this->edit)
@@ -425,7 +436,8 @@ class Assignments extends CI_Controller
 
 		if ($this->user->level <= 1) // permission denied
 			show_404();
-
+		$this->form_validation->set_rules('classroom_id', 'Classroom', 'required|integer');
+		
 		$this->form_validation->set_rules('assignment_name', 'assignment name', 'required|max_length[50]');
 		$this->form_validation->set_rules('start_time', 'start time', 'required');
 		$this->form_validation->set_rules('finish_time', 'finish time', 'required');

@@ -48,7 +48,12 @@
 
 <p>{{ view|title }} Submissions of <span dir="auto">{{ user.selected_assignment.name }}</span></p>
 {%  if view == 'all' %}
-<p><i class="fa fa-warning color3"></i> You cannot change your final submissions after assignment finishes.</p>
+<p><i class="fa fa-warning color3"></i> You cannot change your final submissions after assignment finishes. 
+			| <a href="{{ site_url("classroom/#{classroom.id}/assignment/#{user.selected_assignment.id}/submissions/final") }}">
+				<i class="fa fa-check-circle fa-lg"></i>
+				{{ view|title }} Final Submissions
+			</a>
+</p>
 {% endif %}
 <table class="sharif_table">
 	<thead>

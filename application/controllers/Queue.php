@@ -24,11 +24,12 @@ class Queue extends CI_Controller
 	// ------------------------------------------------------------------------
 
 
-	public function index()
+	public function index($classroom_id)
 	{
 
 		$data = array(
-			'all_assignments' => $this->assignment_model->all_assignments(),
+			//'all_assignments' => $this->assignment_model->all_assignments(),
+				'all_assignments' => $this->assignment_model->all_assignments_by_classroom($classroom_id),
 			'queue' => $this->queue_model->get_queue(),
 			'working' => $this->settings_model->get_setting('queue_is_working')
 		);

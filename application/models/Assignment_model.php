@@ -52,7 +52,8 @@ class Assignment_model extends CI_Model
 			'extra_time' => $extra_time*60,
 			'late_rule' => $this->input->post('late_rule'),
 			'participants' => $this->input->post('participants'),
-			'published' => 	($this->input->post('visible')===NULL?0:1)
+			'published' => 	($this->input->post('visible')===NULL?0:1),
+			'classroom_id' => 	$this->input->post('classroom_id')
 				
 		);
 		if($edit)
@@ -186,6 +187,46 @@ class Assignment_model extends CI_Model
 	public function all_assignments()
 	{
 		$result = $this->db->order_by('id')->get('assignments')->result_array();
+		$assignments = array();
+		foreach ($result as $item)
+		{
+			$assignments[$item['id']] = $item;
+			if(time() >  strtotime($item['start_time']) && strtotime($item['finish_time']) > time() )
+				$assignments[$item['id']]['total_duration'] = shj_sectohuman(strtotime($item['finish_time']) - time());
+		}
+		return $assignments;
+	}
+	/**
+	 * All of My Assignments
+	 *
+	 * Returns a list of all assignments and their information for the courses that you've enrolled
+	 * 
+	 *
+	 * @return mixed
+	 */
+	public function all_my_assignments($courseArray)
+	{
+		$result = $this->db->order_by('id')->where_in('classroom_id', $courseArray)->get('assignments')->result_array();
+		$assignments = array();
+		foreach ($result as $item)
+		{
+			$assignments[$item['id']] = $item;
+			if(time() >  strtotime($item['start_time']) && strtotime($item['finish_time']) > time() )
+				$assignments[$item['id']]['total_duration'] = shj_sectohuman(strtotime($item['finish_time']) - time());
+		}
+		return $assignments;
+	}
+	
+	/**
+	 * All Assignments by classroom
+	 *
+	 * Returns a list of all assignments and their information
+	 *
+	 * @return mixed
+	 */
+	public function all_assignments_by_classroom($classroomid)
+	{
+		$result = $this->db->order_by('id')->get_where('assignments', array('classroom_id'=>$classroomid))->result_array();
 		$assignments = array();
 		foreach ($result as $item)
 		{
@@ -407,7 +448,7 @@ class Assignment_model extends CI_Model
 		$assignments_root = rtrim($this->settings_model->get_setting('assignments_root'), '/');
 
 		if ($type === 'html')
-		{
+		{	die("html is not allowed anymore");
 			// Remove the markdown code
 			unlink("$assignments_root/assignment_{$assignment_id}/p{$problem_id}/desc.md");
 			// Save the html code

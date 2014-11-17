@@ -7,8 +7,8 @@
 	<ul>
 		<li class="color-dashboard{{ selected=='dashboard' ? ' selected' }}">
 			<a href="{{ site_url('dashboard') }}">
-				<i class="fa fa-dashboard fa-lg"></i>
-				<span class="sidebar_text">Dashboard</span>
+				<i class="fa fa-home fa-lg"></i>
+				<span class="sidebar_text">Home</span>
 			</a>
 		</li>
 		{% if user.level == 3 %}
@@ -25,46 +25,60 @@
 			</a>
 		</li>
 		{% endif %}
-		<li class="color-notifications{{ selected=='notifications' ? ' selected' }}">
-			<a href="{{ site_url('notifications') }}">
-				<i class="fa fa-bell fa-lg"></i>
-				<span class="sidebar_text">Notifications</span>
+		<li class="color-notifications{{ selected=='classrooms' ? ' selected' }}">
+			<a href="{{ site_url('classrooms') }}">
+				<i class="fa fa-users fa-lg"></i>
+				<span class="sidebar_text">Classrooms</span>
 			</a>
 		</li>
-		<li class="color-assignments{{ selected=='assignments' ? ' selected' }}">
-			<a href="{{ site_url('assignments') }}">
+		<li class="color-assignments{{ selected=='classroom' ? ' selected' }} {{ hideclassmenu=='yes' ? ' hide' }}">
+			<a href="{{ site_url('classroom/'~classroom.id) }}">
+				<i class="fa fa-book fa-lg"></i>
+				<span class="sidebar_text">{{ classroom.shortname }} </span>
+			</a>
+		</li>
+		{% if user.selected_assignment.id > 0 %}
+		<li class="color-assignments{{ selected=='assignments' ? ' selected' }} {{ hideclassmenu=='yes' ? ' hide' }}">
+			<a href="{{ site_url('classroom/'~classroom.id) }}/assignments">
 				<i class="fa fa-folder-open fa-lg"></i>
 				<span class="sidebar_text">Assignments</span>
 			</a>
 		</li>
-		<li class="color-problems{{ selected=='problems' ? ' selected' }}">
-			<a href="{{ site_url('problems') }}">
+		<li class="color-problems{{ selected=='problems' ? ' selected' }}  {{ hideclassmenu=='yes' ? ' hide' }}">
+			<a href="{{ site_url('problems/'~classroom.id) }}">
 				<i class="fa fa-puzzle-piece fa-lg"></i>
 				<span class="sidebar_text">Problems</span>
 			</a>
 		</li>
-		<li class="color-submit{{ selected=='submit' ? ' selected' }}">
-			<a href="{{ site_url('submit') }}">
-				<i class="fa fa-location-arrow fa-lg"></i>
-				<span class="sidebar_text">Submit</span>
-			</a>
-		</li>
-		<li class="color-final_submissions{{ selected=='final_submissions' ? ' selected' }}">
-			<a href="{{ site_url('submissions/final') }}">
+		{#<li class="color-final_submissions{{ selected=='final_submissions' ? ' selected' }} {{ hideclassmenu=='yes' ? ' hide' }}">
+			<a href="{{ site_url("classroom/#{classroom.id}/assignment/#{user.selected_assignment.id}/submissions/final") }}">
 				<i class="fa fa-map-marker fa-lg"></i>
 				<span class="sidebar_text">Final Submissions</span>
 			</a>
-		</li>
-		<li class="color-all_submissions{{ selected=='all_submissions' ? ' selected' }}">
-			<a href="{{ site_url('submissions/all') }}">
+		</li>#}
+		<li class="color-all_submissions{{ selected=='all_submissions' ? ' selected' }} {{ hideclassmenu=='yes' ? ' hide' }}">
+			<a href="{{ site_url("classroom/#{classroom.id}/assignment/#{user.selected_assignment.id}/submissions") }}">
 				<i class="fa fa-bars fa-lg"></i>
 				<span class="sidebar_text">All Submissions</span>
 			</a>
 		</li>
-		<li class="color-scoreboard{{ selected=='scoreboard' ? ' selected' }}">
+		{% if user.selected_assignment[scoreboard] ==1 %}
+		<li class="color-scoreboard{{ selected=='scoreboard' ? ' selected' }}  {{ hideclassmenu=='yes' and showscoreboard!="yes"? ' hide' }}">
 			<a href="{{ site_url('scoreboard') }}">
-				<i class="fa fa-star fa-lg"></i>
+				<i class="fa fa-trophy fa-lg"></i>
 				<span class="sidebar_text">Scoreboard</span>
+			</a>
+		</li>
+		{% endif %}
+		{% endif %}
+		<li class="color-submit{{ selected=='submit' ? ' selected' }}  {{ hideclassmenu=='yes' ? ' hide' }}">
+			{#<a href="{{ site_url('submit') }}">
+				<i class="fa fa-location-arrow fa-lg"></i>
+				<span class="sidebar_text">Submit</span>
+			</a>#}
+			<a href="{{ site_url('grades') }}">
+				<i class="fa fa-th-list fa-lg"></i>
+				<span class="sidebar_text">Grades</span>
 			</a>
 		</li>
 	</ul>

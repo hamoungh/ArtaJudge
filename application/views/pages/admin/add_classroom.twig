@@ -1,0 +1,134 @@
+{#
+ # Sharif Judge
+ # file: add_user.twig
+ # author: Mohammad Javad Naderi <mjnaderi@gmail.com>
+ #}
+{% set selected = 'classrooms' %}
+{% set hideclassmenu = 'yes' %}
+{% extends 'templates/base.twig' %}
+{% block icon %}fa-plus{% endblock %}
+{% block title %}Add Classroom{% endblock %}
+{% block head_title %}Add Classroom{% endblock %}
+
+
+
+{% block title_menu %}
+	<span class="title_menu_item"><a href="http://docs.sharifjudge.ir/en:v1.4:users#add_users" target="_blank"><i class="fa fa-question-circle color6"></i> Help</a></span>
+{% endblock %}
+
+
+
+{% block other_assets %}
+<script type='text/javascript' src="{{ base_url('assets/js/taboverride.min.js') }}"></script>
+<script>
+	$(document).ready(function(){
+	//	tabOverride.set(document.getElementsByTagName('textarea'));
+	});
+</script>
+<script>
+	$(document).ready(function(){
+
+	});
+</script>
+{% endblock %}
+
+
+
+
+{% block main_content %}
+{{ form_open_multipart(edit ? 'classroom/edit/'~edit_classroom.id : 'classroom/add') }}
+<input id="id" type="hidden" name="id"  value="{{ classroom.id }}"/>
+
+<p>Add a new Class</p>
+	<p class="input_p clear">
+		<label for="name">Full Name <br>
+			<span class="form_comment">Course Full Name</span>
+		</label>
+		<input id="name" type="text" name="name" class="sharif_input medium" value="{{ classroom.name }}"/>
+		{{ form_error('name', '<div class="shj_error">', '</div>') }}	
+	</p>
+	<p class="input_p clear">
+		<label for="form_t_path">Short Name <br>
+			<span class="form_comment">i.e: CSE2010</span>
+		</label>
+		<input id="form_t_path" type="text" name="shortname" class="sharif_input medium" value="{{ classroom.shortname }}"/>
+		{{ form_error('shortname', '<div class="shj_error">', '</div>') }}		
+	</p>
+
+<p class="input_p clear">
+<label for="form_t_path">Description  <br>
+			<span class="form_comment"></span>
+		</label>
+<textarea name="description"  rows="10" cols="80" class="sharif_input">
+{{ classroom.description }}
+</textarea>
+{{ form_error('description', '<div class="shj_error">', '</div>') }}	
+</p>
+<p class="input_p clear">
+		<label for="form_t_path">Enrollment Key <br>
+			<span class="form_comment">Password for registering class</span>
+		</label>
+		<input id="form_t_path" type="text" name="enrollment_key" class="sharif_input medium" value="{{ classroom.enrollment_key }}"/>
+	{{ form_error('enrollment_key', '<div class="shj_error">', '</div>') }}	
+</p>
+<p class="input_p clear">
+		<label for="form_t_path">Semester <br>
+			<span class="form_comment"></span>
+		</label>
+		<select class="sharif_input medium" name="semester">
+			 {% for semester in semesters %}
+        	 {% if classroom and user.id == classroom.semester %}
+            	<option value="{{ semester.id }}" selected="selected" >  {{ semester.name }} </option>
+       		 {% else %}
+            	<option value="{{ semester.id }}" >  {{ semester.name }} </option>
+         	{% endif %}
+    		{% endfor %}
+		</select>
+			{{ form_error('semester', '<div class="shj_error">', '</div>') }}	
+		
+</p>
+<p class="input_p clear">
+		<label for="form_t_path">Instructor <br>
+			<span class="form_comment"></span>
+		</label>
+		<select name="instructor" class="sharif_input medium" >
+		 {% for user in users %}
+        	 {% if classroom and user.id == classroom.instructor %}
+            	<option value="{{ user.id }}" selected="selected" >  {{ user.name }} {{ user.family }} </option>
+       		 {% else %}
+            	<option value="{{ user.id }}" >  {{ user.name }} {{ user.family }} </option>
+         	{% endif %}
+    	{% endfor %}
+    	</select>
+    	{{ form_error('instructor', '<div class="shj_error">', '</div>') }}	
+    	
+</p>
+<p class="input_p clear">
+		<label for="form_t_path">Assistant <br>
+			<span class="form_comment"></span>
+		</label>
+		<select name="assistant" class="sharif_input medium" >
+			 {% if classroom.assistant == -1 %}
+			 	  <option value="-1" selected="selected" > -Nobody- </option>
+			 {% else %}
+            	<option value="-1}" > -Nobody- </option>
+         	{% endif %}	  
+			 {% for user in users %}
+        	 {% if classroom and user.id == classroom.assistant %}
+            	<option value="{{ user.id }}" selected="selected" >  {{ user.name }} {{ user.family }} </option>
+       		 {% else %}
+            	<option value="{{ user.id }}" >  {{ user.name }} {{ user.family }} </option>
+         	{% endif %}
+    	{% endfor %}
+		</select>
+		{{ form_error('assistant', '<div class="shj_error">', '</div>') }}	
+		
+</p>
+<p class="input_p clear">
+	<input type="checkbox" name="visible" value="1" {{ (classroom.visible != null) ? 'checked' : '' }} /> Visible
+	{{ form_error('visible', '<div class="shj_error">', '</div>') }}	
+
+</p>
+<input type="submit" class="sharif_input"  value="Submit"/>
+</form>
+{% endblock %}  {# main_content #}

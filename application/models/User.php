@@ -30,17 +30,7 @@ class User extends CI_Model
 		$this->email = $user->email;
 		$this->id = $user->id;
 		
-		$query = $this->db->get_where('assignments', array('id' => $user->selected_assignment));
-		if ($query->num_rows() != 1)
-			$this->selected_assignment = array(
-				'id' => 0,
-				'name' => 'Not Selected',
-				'finish_time' => 0,
-				'extra_time' => 0,
-				'problems' => 0
-			);
-		else
-			$this->selected_assignment = $query->row_array();
+		//$query = $this->db->get_where('assignments', array('id' => $user->selected_assignment));
 		
 		$query = $this->db->get_where('classrooms', array('id' => $user->selected_classroom));
 		if ($query->num_rows() != 1)
@@ -59,8 +49,23 @@ class User extends CI_Model
 			case 'student': $this->level = 0; break;
 		}
 	}
-
-
+	public function set_selected_assignment($classroom_id){
+		$selected = $this->session->userdata('selected_assignment');
+		if(isset($selected[$classroom_id])){
+			$query = $this->db->get_where('assignments', array('id' => $selected[$classroom_id]));
+			if ($query->num_rows() == 1){
+				$this->selected_assignment = $query->row_array();
+				return;
+			}
+		}
+		$this->selected_assignment = array(
+				'id' => 0,
+				'name' => 'Not Selected',
+				'finish_time' => 0,
+				'extra_time' => 0,
+				'problems' => 0
+		);
+	}
 	// ------------------------------------------------------------------------
 
 
@@ -71,9 +76,10 @@ class User extends CI_Model
 	 *
 	 * @param $assignment_id
 	 */
-	public function select_assignment($assignment_id)
+	public function select_assignment($classroom_id, $assignment_id)
 	{
-		$this->db->where('username', $this->username)->update('users', array('selected_assignment'=>$assignment_id));
+		//$this->db->where('username', $this->username)->update('users', array('selected_assignment'=>$assignment_id));
+		$this->session->set_userdata('selected_assignment', array($classroom_id=> $assignment_id));
 	}
 
 

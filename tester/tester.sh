@@ -340,6 +340,8 @@ if [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
 			echo '#define main themainmainfunction' | cat - code.c > thetemp && mv thetemp code.c
 			if [ -f "$PROBLEMPATH/program.$EXT" ]; then
 				shj_log "Main File Detected"
+				cp $PROBLEMPATH/program.$EXT program.$EXT
+				echo '#define main themainmainfunction' | cat - program.$EXT > thetemp && mv thetemp program.$EXT
 				$COMPILER program.$EXT shield.$EXT $C_OPTIONS $C_WARNING_OPTION -o $EXEFILE >/dev/null 2>cerr
 			else
 				$COMPILER shield.$EXT $C_OPTIONS $C_WARNING_OPTION -o $EXEFILE >/dev/null 2>cerr
@@ -350,6 +352,7 @@ if [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
 		mv code.c code.$EXT
 		if [ -f "$PROBLEMPATH/program.$EXT" ]; then
 			shj_log "Main File Detected"
+			cp $PROBLEMPATH/program.$EXT program.$EXT
 			$COMPILER program.$EXT code.$EXT $C_OPTIONS $C_WARNING_OPTION -o $EXEFILE >/dev/null 2>cerr
 		else
 			$COMPILER code.$EXT $C_OPTIONS $C_WARNING_OPTION -o $EXEFILE >/dev/null 2>cerr

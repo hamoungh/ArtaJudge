@@ -27,12 +27,26 @@ class Dashboard extends CI_Controller
 	public function index()
 	{
 		$data = array(
-			'all_assignments'=>$this->assignment_model->all_assignments(),
+			//'all_assignments'=>$this->assignment_model->all_assignments(),
 			'week_start'=>$this->settings_model->get_setting('week_start'),
 			'wp'=>$this->user->get_widget_positions(),
 			'notifications' => $this->notifications_model->get_latest_notifications()
 		);
-
+		//->showing assignments that are related to enrolled courses.
+			//-> get enrolled courses.
+		$enrollments = $this->enrollment_model->get_all_enrollments_by_user($this->user->id);
+			
+			//-> get assignments for course
+		if($enrollments){
+			$enrollments_classrooms = array();
+			for($i=0; $i<count($enrollments); $i++){
+				$enrollments_classrooms[]= $enrollments[$i]['classroom_id'];
+			}
+			
+			$data['all_assignments'] = $this->assignment_model->all_my_assignments($enrollments_classrooms);
+		}
+			
+		
 		// detecting errors:
 		if($this->messages != null)//summing up with the errors from enrollment
 			$data['errors'] =$this->messages;
@@ -61,7 +75,7 @@ class Dashboard extends CI_Controller
 			if($enrollments[$i] === FALSE || $enrollments[$i]['type'] != "enroll"){
 				unset($enrollments[$i]);
 			}else{
-				$enrollments[$i]= $this->classroom_model->get_classroom($enrollments[$i]['classroomid']);
+				$enrollments[$i]= $this->classroom_model->get_classroom($enrollments[$i]['classroom_id']);
 				
 			}
 		}
@@ -71,14 +85,17 @@ class Dashboard extends CI_Controller
 		$data['all_courses']= $this->classroom_model->get_all_classroom();
 		//-> removing the courses that are enrolled before
 		//first make a clean list of enrollments 
+		$enrolled_course = array();
 		for($i=0; $i<count($enrollments); $i++){
 			$enrolled_course[]= $enrollments[$i]['id'];
 		}
 		//pulling out 
-		$c= count($data['all_courses']);
-		for($i=0; $i<$c; $i++){
-			if( in_array($data['all_courses'][$i]['id'], $enrolled_course)){
-				unset($data['all_courses'][$i]);
+		if(count($enrolled_course)){
+			$c= count($data['all_courses']);
+			for($i=0; $i<$c; $i++){
+				if( in_array($data['all_courses'][$i]['id'], $enrolled_course)){
+					unset($data['all_courses'][$i]);
+				}
 			}
 		}
 			

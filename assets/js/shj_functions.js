@@ -355,11 +355,15 @@ $(document).ready(function () {
 	$(".select_assignment").click(
 		function () {
 			var id = $(this).children('i').addBack('i').data('id');
+			var cid = $(this).children('i').addBack('i').data('classroom');
+
+
 			$.ajax({
 				type: 'POST',
 				url: shj.site_url + 'assignments/select',
 				data: {
 					assignment_select: id,
+					classroom_id: cid,
 					shj_csrf_token: shj.csrf_token
 				},
 				beforeSend: shj.loading_start,
@@ -515,7 +519,55 @@ $(document).ready(function(){
 });
 
 
-
+/**
+ * Classroom page
+ * 
+ */
+$(document).ready(function(){
+$('.delete_classroom').click(function(){
+	var row = $(this).parents('tr');
+	var classroom_id = row.data('id');
+	var shortname = row.children('#shortname').html();
+	noty({
+		text: 'Are you sure you want to delete this classroom?<br>Classroom ID: '+classroom_id+'<br>Short Name: '+shortname+'<br><i class="splashy-warning_triangle"></i> All of the assignments of this classroom will be deleted.',
+		layout: 'center',
+		type: 'confirm',
+		animation: {
+			open: {height: 'toggle'},
+			close: {height: 'toggle'},
+			easing: 'swing',
+			speed: 300
+		},
+		buttons: [
+			{addClass: 'btn shj-red', text: 'Yes, Delete', onClick: function($noty) {
+				$noty.close();
+				$.ajax({
+					type: 'POST',
+					url: shj.site_url+'classroom/delete',
+					data: {
+						user_id: user_id,
+						shj_csrf_token: shj.csrf_token
+					},
+					beforeSend: shj.loading_start,
+					complete: shj.loading_finish,
+					error: shj.loading_error,
+					success: function(response){
+						if (response.done)
+						{
+							row.animate({backgroundColor: '#FF7676'},1000, function(){row.remove();});
+							noty({text: 'Classroom'+shortname+' deleted.', layout:'bottomRight', type: 'success', timeout: 5000});
+						}
+						else
+							shj.loading_failed(response.message);
+					}
+				});
+			}
+			},
+			{addClass: 'btn shj-blue', text: 'No, Don\'t Delete', onClick: function($noty){$noty.close();}}
+		]
+	});
+});
+});
 /**
  * Set dir="auto" for all input elements
  */

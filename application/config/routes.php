@@ -76,12 +76,21 @@
 $route['default_controller'] = 'dashboard';
 $route['register'] = "login/register";
 $route['logout'] = "login/logout";
-$route['submissions/final']="submissions/the_final";
-$route['submissions/final/(.*)']="submissions/the_final/$1";
+
 $route['profile/(:num)'] = "profile/index/$1";
 $route['moss/(:num)'] = "moss/index/$1";
-$route['problems/(:num)'] = "problems/index/$1";
-$route['problems/(:num)/(:num)'] = "problems/index/$1/$2";
+$route['problems/(:num)'] = "problems/index/$1"; //1st is classroom
+$route['problems/(:num)/(:num)'] = "problems/index/$1/$2"; //classroom, assignment
+$route['problems/(:num)/(:num)/(:num)'] = "problems/index/$1/$2/$3"; //classroom, assignment,problem
+$route['classroom/(:num)/assignments'] = "assignments/index/$1";
+$route['classroom/(:num)/assignments/add'] = "assignments/add/$1";
+$route['classroom/(:num)'] = "classroom/index/$1";
+$route['classrooms'] = "classroom/showall";
+$route['classroom/(:num)/assignment/(:num)/submissions']="submissions/all/$1/$2";
+//$route['classroom/(:num)/assignment/(:num)/submissions/(.*)']="submissions/all/$1/$2/$3";
+$route['classroom/(:num)/assignment/(:num)/submissions/final']="submissions/the_final/$1/$2";
+$route['classroom/(:num)/assignment/(:num)/submissions/final/(.*)']="submissions/the_final/$1/$2/$3";
+#$route['classrooms/add'] = "classroom/add";
 $route['rejudge/(:num)'] = "rejudge/index/$1";
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

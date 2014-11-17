@@ -13,9 +13,12 @@
 
 {% block other_assets %}
 <script type='text/javascript' src="{{ base_url('assets/js/taboverride.min.js') }}"></script>
+<script type="text/javascript" src="{{ base_url('assets/js/jquery.pagedown-bootstrap.combined.min.js') }}"></script>
+<link href="{{ base_url('assets/styles/jquery.pagedown-bootstrap.css') }}" rel="stylesheet">
 <script>
 $(document).ready(function(){
 	tabOverride.set(document.getElementById('md_editor'));
+	$("#md_editor").pagedownBootstrap();
 });
 </script>
 {% endblock %}
@@ -172,12 +175,12 @@ Violets are blue.
 
 <div id="md_div">
 	<p>
-		Assignment {{ description_assignment.id }} (<span dir="auto">{{ description_assignment.name }}</span>)<br>
-		Problem {{ problem.id }}
+		<h1>Assignment {{ description_assignment.id }} (<span dir="auto">{{ description_assignment.name }}</span>)<br> </h1>
+		<h2>Problem {{ problem.id }}</h2>
 	</p>
 	{{ form_open("problems/edit/md/#{description_assignment.id}/#{problem.id}") }}
 	<p class="input_p">
-		<textarea dir="auto" name="text" rows="30" cols="75" class="sharif_input" id="md_editor">{{ problem.description }}</textarea>
+		<textarea dir="auto" name="text" rows="10" cols="75" class="sharif_input form-control" id="md_editor">{{ problem.description }}</textarea>
 	</p>
 	<p class="input_p">
 		<input type="submit" value="Save" class="sharif_input"/>

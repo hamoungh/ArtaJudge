@@ -6,8 +6,8 @@
 {% set selected = 'assignments' %}
 {% extends 'templates/base.twig' %}
 {% block icon %}{{ edit ? 'fa-edit' : 'fa-plus-square' }}{% endblock %}
-{% block title %}{{ edit ? 'Edit' : 'Add' }} Assignment{% endblock %}
-{% block head_title %}{{ edit ? 'Edit' : 'Add' }} Assignment{% endblock %}
+{% block title %}{{ edit ? 'Edit' : 'Add' }} Assignment for {{classroom.name}}[{{classroom.shortname}}]{% endblock %}
+{% block head_title %}{{ edit ? 'Edit' : 'Add' }} Assignment  for {{classroom.name}}[{{classroom.shortname}}]{% endblock %}
 
 
 
@@ -88,6 +88,8 @@
 {{ form_open_multipart(edit ? 'assignments/edit/'~edit_assignment.id : 'assignments/add') }}
 <div class="panel_left">
 	<input type="hidden" name="number_of_problems" id="nop" value="{{ edit ? edit_assignment.problems : problems|length }}"/>
+	<input type="hidden" name="classroom_id" id="classroom_id" value="{{ classroom.id }}"/>
+	
 	<p class="input_p">
 		<label for="form_a_name">Assignment Name</label>
 		<input id="form_a_name" type="text" name="assignment_name" class="sharif_input medium" value="{{ edit ? edit_assignment.name : set_value('assignment_name') }}"/>

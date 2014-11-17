@@ -4,6 +4,7 @@
  # author: Mohammad Javad Naderi <mjnaderi@gmail.com>
  #}
 {% set selected = 'notifications' %}
+{% set hideclassmenu = 'yes' %}
 {% extends 'templates/base.twig' %}
 {% block icon %}{{ notif_edit ? 'fa-edit' : 'fa-plus' }}{% endblock %}
 {% block title %}{{ notif_edit ? 'Edit' : 'New' }} Notification{% endblock %}

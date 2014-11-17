@@ -353,14 +353,22 @@ class User_model extends CI_Model
 	 * @param $username
 	 * @return mixed
 	 */
-	public function selected_assignment($username)
+	public function selected_assignment($classroom_id,$username)
 	{
-		$query = $this->db->select('selected_assignment')->get_where('users', array('username'=>$username));
+		/*$query = $this->db->select('selected_assignment')->get_where('users', array('username'=>$username));
 		if ($query->num_rows() != 1){//logout
 			$this->session->sess_destroy();
 			redirect('login');
 		}
-		return $query->row()->selected_assignment;
+		return $query->row()->selected_assignment;*/
+		$selected = $this->session->userdata('selected_assignment');
+		if(!$selected[$classroom_id]){
+			$this->session->sess_destroy();
+			redirect('login');
+		}else{
+			return  $selected[$classroom_id];
+		}
+		
 	}
 
 
@@ -376,11 +384,11 @@ class User_model extends CI_Model
 	 */
 	public function get_names()
 	{
-		$query = $this->db->select('username, display_name')->get('users');
+		$query = $this->db->select('username, name, family')->get('users');
 		$tmp = $query->result_array();
 		$result = array();
 		foreach ($tmp as $row)
-			$result[$row['username']] = $row['display_name'];
+			$result[$row['username']] = $row['name']." ".$row['family'] ;
 		return $result;
 	}
 
@@ -405,7 +413,7 @@ class User_model extends CI_Model
 		$username = $the_user->username;
 
 		$user=array(
-			'display_name' => $this->input->post('display_name'),
+		//	'display_name' => $this->input->post('display_name'),
 			'email' => $this->input->post('email')
 		);
 		
@@ -595,7 +603,16 @@ class User_model extends CI_Model
 	}
 
 
-
+	public function get_all_users_by_role($arrayofroles){
+		$users=  $this->db->order_by('role', 'asc')->order_by('id')->get('users')->result_array();
+		$c= count($users);
+		for($i=0; $i<$c; $i++){
+			if(!in_array($users[$i]['role'], $arrayofroles )){
+				unset($users[$i]);
+			}
+		}
+		return $users;
+	}
 
 
 }

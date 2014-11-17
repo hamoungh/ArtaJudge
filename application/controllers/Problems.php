@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Problems extends CI_Controller
 {
 
-	private $all_assignments;
+	//private $all_assignments;
 
 
 	// ------------------------------------------------------------------------
@@ -21,7 +21,7 @@ class Problems extends CI_Controller
 		if ( ! $this->session->userdata('logged_in')) // if not logged in
 			redirect('login');
 
-		$this->all_assignments = $this->assignment_model->all_assignments();
+		//$this->all_assignments = $this->assignment_model->all_assignments();
 	}
 
 
@@ -34,14 +34,23 @@ class Problems extends CI_Controller
 	 * @param int $assignment_id
 	 * @param int $problem_id
 	 */
-	public function index($assignment_id = NULL, $problem_id = 1)
+	public function index($classroom_id = null, $assignment_id = NULL, $problem_id = 1)
 	{
-
+		if($classroom_id == null){
+			show_error('Should choose a classroom');
+		}
+		$this->user->set_selected_assignment($classroom_id);
+		
 		// If no assignment is given, use selected assignment
 		if ($assignment_id === NULL)
 			$assignment_id = $this->user->selected_assignment['id'];
-		if ($assignment_id == 0)
-			show_error('No assignment selected.');
+		if ($assignment_id == 0) {
+			$this->session->set_flashdata('message', 'No assignment selected. Select one of assignments below.');
+			redirect(site_url('classroom/'.$classroom_id.'/assignments'), 'refresh');
+		}			
+		$this->user->select_assignment($classroom_id, $assignment_id); // they may come with direct link from calendar
+		
+		
 
 		$assignment = $this->assignment_model->assignment_info($assignment_id);
 		
@@ -49,9 +58,11 @@ class Problems extends CI_Controller
 			show_error('Assignment not accessible anymore for students.');
 					
 		$data = array(
-			'all_assignments' => $this->all_assignments,
+			'assignment' => $assignment,
+			'all_assignments' => $this->assignment_model->all_assignments_by_classroom($classroom_id),
 			'all_problems' => $this->assignment_model->all_problems($assignment_id),
 			'description_assignment' => $assignment,
+			'classroom' => $this->classroom_model->get_classroom($assignment['classroom_id']),
 			'can_submit' => TRUE,
 		);
 
@@ -120,10 +131,14 @@ class Problems extends CI_Controller
 			$assignment_id = $this->user->selected_assignment['id'];
 		if ($assignment_id == 0)
 			show_error('No assignment selected.');
-
+	
+		$assignment = $this->assignment_model->assignment_info($assignment_id);
+		
 		$data = array(
-			'all_assignments' => $this->assignment_model->all_assignments(),
+			'all_assignments' => $this->assignment_model->all_assignments_by_classroom($assignment->classroom_id),
 			'description_assignment' => $this->assignment_model->assignment_info($assignment_id),
+			'classroom' => $this->classroom_model->get_classroom($assignment['classroom_id'])
+				
 		);
 
 		if ( ! is_numeric($problem_id) || $problem_id < 1 || $problem_id > $data['description_assignment']['problems'])

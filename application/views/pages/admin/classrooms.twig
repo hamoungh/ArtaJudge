@@ -1,0 +1,61 @@
+{#
+ # Sharif Judge
+ # file: users.twig
+ # author: Mohammad Javad Naderi <mjnaderi@gmail.com>
+ #}
+{% set selected = 'classrooms' %}
+{% set hideclassmenu = 'yes' %}
+{% extends 'templates/base.twig' %}
+{% block icon %}fa-users{% endblock %}
+{% block title %}Classrooms{% endblock %}
+{% block head_title %}Classrooms{% endblock %}
+
+
+
+{% block title_menu %}
+	<span class="title_menu_item"><a href="http://docs.sharifjudge.ir/en:v1.4:users" target="_blank"><i class="fa fa-question-circle color6"></i> Help</a></span>
+	{% if user.level >3 %}	
+	<span class="title_menu_item"><a href="{{ site_url('classroom/add') }}"><i class="fa fa-plus color11"></i> Add Classroom</a></span>
+	{% endif %}
+	{#<span class="title_menu_item"><a href="{{ site_url('classroom/list_excel') }}"><i class="fa fa-download color9"></i> Excel</a></span>
+	#}
+{% endblock %}
+
+
+
+{% block main_content %}
+{% if deleted_classroom %}
+	<p class="shj_ok">Classroom deleted successfully.</p>
+{% endif %}
+
+<div style="height:15px"></div>
+<table class="sharif_table">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>Name</th>
+			<th>Semester</th>
+			{% if user.level >2 %}
+			<th>Created at</th>
+			<th>Actions</th>
+			{% endif %}
+		</tr>
+	</thead>
+	{% for classroom in all_classrooms %}
+		<tr data-id="{{ classroom.id }}">
+			<td>{{ loop.index }}</td>
+			<td dir="auto"><a href="{{ site_url('classroom/'~classroom.id) }}">[{{ classroom.shortname }}] {{ classroom.name }}</a>
+				<br> <i>{{ classroom.instructor }}</i>
+			</td>
+			<td>{{ classroom.semester }}</td>
+			{% if user.level >2 %}
+			<td>{{ classroom.createdat }}</td>
+			<td>
+				<a title="Edit" href="{{ site_url('classroom/edit/'~classroom.id) }}"><i class="fa fa-pencil fa-lg color9"></i></a>
+				<span title="Delete Classroom" class="delete_classroom pointer"><i title="Delete classroom" class="fa fa-times fa-lg color2"></i></span>
+			</td>
+			{% endif %}
+		</tr>
+	{% endfor %}
+</table>
+{% endblock %}  {# main_content #}

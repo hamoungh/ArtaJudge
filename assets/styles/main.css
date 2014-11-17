@@ -1333,3 +1333,6 @@ div.md_cheatsheet pre{
 div.md_cheatsheet p{
 	margin: 0;
 }
+.hide{
+	display:none;
+}

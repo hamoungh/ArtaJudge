@@ -251,7 +251,7 @@ class Submissions extends CI_Controller
 
 
 
-	public function the_final()
+	public function the_final($classroom_id, $assignment_id)
 	{
 
 		if ( ! is_numeric($this->page_number))
@@ -259,7 +259,8 @@ class Submissions extends CI_Controller
 
 		if ($this->page_number<1)
 			show_404();
-
+		$this->user->set_selected_assignment($classroom_id);
+		
 		$config = array(
 			'base_url' => site_url('submissions/final'.($this->filter_user?'/user/'.$this->filter_user:'').($this->filter_problem?'/problem/'.$this->filter_problem:'')),
 			'cur_page' => $this->page_number,
@@ -293,7 +294,8 @@ class Submissions extends CI_Controller
 
 		$data = array(
 			'view' => 'final',
-			'all_assignments' => $this->assignment_model->all_assignments(),
+			//'all_assignments' => $this->assignment_model->all_assignments(),
+			'all_assignments' => $this->assignment_model->all_assignments_by_classroom($classroom_id),
 			'problems' => $this->problems,
 			'submissions' => $submissions,
 			'excel_link' => site_url('submissions/final_excel'.($this->filter_user?'/user/'.$this->filter_user:'').($this->filter_problem?'/problem/'.$this->filter_problem:'')),
@@ -302,6 +304,8 @@ class Submissions extends CI_Controller
 			'pagination' => $this->shj_pagination->create_links(),
 			'page_number' => $this->page_number,
 			'per_page' => $config['per_page'],
+			'classroom' => $this->classroom_model->get_classroom($classroom_id),
+				
 		);
 
 		$this->twig->display('pages/submissions.twig', $data);
@@ -315,7 +319,7 @@ class Submissions extends CI_Controller
 
 
 
-	public function all()
+	public function all($classroom_id, $assignment_id)
 	{
 
 		if ( ! is_numeric($this->page_number))
@@ -323,7 +327,9 @@ class Submissions extends CI_Controller
 
 		if ($this->page_number < 1)
 			show_404();
-
+		$this->user->set_selected_assignment($classroom_id);
+		$assignment = $this->assignment_model->assignment_info($this->user->selected_assignment['id']);
+		
 		$config = array(
 			'base_url' => site_url('submissions/all'.($this->filter_user?'/user/'.$this->filter_user:'').($this->filter_problem?'/problem/'.$this->filter_problem:'')),
 			'cur_page' => $this->page_number,
@@ -331,7 +337,7 @@ class Submissions extends CI_Controller
 			'per_page' => $this->settings_model->get_setting('results_per_page_all'),
 			'num_links' => 5,
 			'full_ul_class' => 'shj_pagination',
-			'cur_li_class' => 'current_page'
+			'cur_li_class' => 'current_page',
 		);
 		if ($config['per_page']==0)
 			$config['per_page'] = $config['total_rows'];
@@ -363,6 +369,9 @@ class Submissions extends CI_Controller
 			'filter_user' => $this->filter_user,
 			'filter_problem' => $this->filter_problem,
 			'pagination' => $this->shj_pagination->create_links(),
+			'classroom' => $this->classroom_model->get_classroom($assignment['classroom_id']),
+			'assignment' => $assignment
+			
 		);
 
 		$this->twig->display('pages/submissions.twig', $data);

@@ -3,12 +3,11 @@
  # file: dashboard.twig
  # author: Mohammad Javad Naderi <mjnaderi@gmail.com>
  #}
-{% set selected = 'dashboard' %}
-{% set hideclassmenu = 'yes' %}
+{% set selected = 'classroom' %}
 {% extends 'templates/base.twig' %}
-{% block icon %}fa-home{% endblock %}
-{% block title %}Welcome,  {{ user.username }}{% endblock %}
-{% block head_title %}Home{% endblock %}
+{% block icon %}fa-users{% endblock %}
+{% block title %}  {{ classroom.name }} [{{ classroom.shortname }}] {% endblock %}
+{% block head_title %} {{ classroom.name }} [{{ classroom.shortname }}]{% endblock %}
 
 
 
@@ -21,7 +20,7 @@
 <script>
 $(document).ready(function () {
 	$('#calendar').fullCalendar({
-	//	timeFormat: 'HH:mm:ss { - HH:mm}',
+		//timeFormat: 'HH:mm { - HH:mm}',
 		editable: false,
 		height: 280,
 		firstDay: {{ week_start }},
@@ -77,12 +76,14 @@ $(document).ready(function () {
 	<p class="shj_error">{{ error|raw }}</p>
 {% endfor %}
 <div style="height: 15px;"></div>
+{{ classroom.description }}
+
 <div class="gridster">
 	<?php $i = 0; ?>
 	<ul>
-		<li data-row="{{ wp[0] ? wp[0]['r'] : '1' }}" data-col="{{ wp[0] ? wp[0]['c'] : '1' }}" data-sizex="{{ wp[0] ? wp[0]['x'] : '1' }}" data-sizey="{{ wp[0] ? wp[0]['y'] : '1' }}">
+		{# <li data-row="{{ wp[0] ? wp[0]['r'] : '1' }}" data-col="{{ wp[0] ? wp[0]['c'] : '1' }}" data-sizex="{{ wp[0] ? wp[0]['x'] : '1' }}" data-sizey="{{ wp[0] ? wp[0]['y'] : '1' }}">
 			<div class="shj_widget">
-				<div class="widget_title"><i class="fa fa-group fa-lg color10"></i> Classrooms
+				<div class="widget_title"><i class="fa fa-group fa-lg color10"></i> classrooms
 			
 						<a title="New Enrollment" id="new_enrollment" href="#" class="pull-right">
 							<i class="fa fa-plus color11"></i> New Enrollment
@@ -92,24 +93,24 @@ $(document).ready(function () {
 				</div>
 				<div class="widget_scrollable scroll-wrapper">
 					<div class="scroll-content">
-						<div class="widget_contents_container" id='courses' style="padding:5px 5px;">
+						<div class="widget_contents_container" id='classrooms' style="padding:5px 5px;">
 							<div id="enrollment_form" style="display: none;">
-							{% if all_courses|length == 0 %}
+							{% if all_classrooms|length == 0 %}
 									<p style="text-align: center;">Nothing to Enroll Anymore...</p>
 							{% else %}
 							{{ form_open_multipart( 'dashboard/enroll') }}	
 							<p class="input_p">
-								<label for="form_a_name">Course Name:
+								<label for="form_a_name">classroom Name:
 										<span class="form_comment space-right"></span>
 								</label>
-								<select id="form_a_name" name="course_id" class="sharif_input medium" >
-									{% for course in all_courses %}
-										<option value="{{ course.id }}" >{{ course.name }}</option>
+								<select id="form_a_name" name="classroom_id" class="sharif_input medium" >
+									{% for classroom in all_classrooms %}
+										<option value="{{ classroom.id }}" >{{ classroom.name }}</option>
 									{% endfor %}
 								
 									
 								</select>
-								{{ form_error('course_name', '<div class="shj_error">', '</div>') }}
+								{{ form_error('classroom_name', '<div class="shj_error">', '</div>') }}
 							</p>
 							<p class="input_p">
 								<label for="form_a_name">Key:
@@ -126,17 +127,17 @@ $(document).ready(function () {
 							<hr>
 							</div>
 						
-								{% if courses|length == 0 %}
+								{% if classrooms|length == 0 %}
 									<p style="text-align: center;">Nothing yet...</p>
 								{% endif %}
-								{% for course in courses %}
-									<div class="cours" id="number{{ course.id }}" data-id="{{ course.id }}">
-										<div class="course_title" dir="auto">
-											<span class="anchor "><a href="{{ site_url('classroom/'~course.id ) }}">[{{ course.shortname }}] {{ course.name }}</a> </span>
+								{% for classroom in classrooms %}
+									<div class="cours" id="number{{ classroom.id }}" data-id="{{ classroom.id }}">
+										<div class="classroom_title" dir="auto">
+											<span class="anchor ttl_n">[{{ classroom.shortname }}] {{ classroom.name }} </span>
 											<span class="notif_meta" dir="ltr">
 											</span>
 										</div>
-										<div class="course_text latest" dir="auto">{{ course.description }}</div>
+										<div class="classroom_text latest" dir="auto">{{ classroom.description }}</div>
 									</div>
 								{% endfor %}
 						
@@ -144,7 +145,8 @@ $(document).ready(function () {
 					</div>
 				</div>
 			</div>
-		</li>
+		</li> 
+		#}
 		<li data-row="{{ wp[0] ? wp[0]['r'] : '1' }}" data-col="{{ wp[0] ? wp[0]['c'] : '1' }}" data-sizex="{{ wp[0] ? wp[0]['x'] : '1' }}" data-sizey="{{ wp[0] ? wp[0]['y'] : '1' }}">
 			<div class="shj_widget">
 				<div class="widget_title"><i class="fa fa-calendar-o fa-lg color10"></i> Calendar</div>
